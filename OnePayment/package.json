@@ -1,9 +1,8 @@
 {
-  "homepage": "https://jamess-a.github.io/Payment-Project",
   "name": "onepayment",
-  "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "private": true,
+  "homepage": "https://jamess-a.github.io/Payment-Project",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
@@ -43,6 +42,7 @@
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "gh-pages": "^5.0.0",
     "vite": "^5.3.4"
   }
 }
