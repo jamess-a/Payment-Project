@@ -1,11 +1,9 @@
 // src/components/Home.jsx
 import React from "react";
 import {
-  Button,
   Container,
   Typography,
   Box,
-  BottomNavigation,
 } from "@mui/material";
 import QrCodeComponent from "../component/QrCode";
 import AppBar from "../component/AppBar";
