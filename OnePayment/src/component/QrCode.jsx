@@ -28,13 +28,13 @@ export default function QrCodeComponent() {
     };
 
     // เรียกใช้ format รูปเเบบจำนวนเงิน
-    formatAmount(amount);
 
     // คำนวณจำนวนเงินใหม่ถ้ามีการกรอกค่าจำนวนที่หาร
     let calculatedAmount = amount;
     if (divided && divided !== "") {
       calculatedAmount = calculateAmount(divided);
       setAmount(calculatedAmount); // อัปเดตจำนวนเงินที่คำนวณแล้ว
+      formatAmount(calculatedAmount);
     }
 
     // ตรวจสอบว่าเลขหมายหรือหมายเลขบัตรประชาชนถูกต้อง
