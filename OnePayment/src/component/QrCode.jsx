@@ -15,27 +15,42 @@ export default function QrCodeComponent() {
   const [SnackbarOpen, setSnackbarOpen] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
-  const generateQrCode = async () => {
-    const calculateAmount = (divided) => {
-      const amount2 = amount / divided;
-      return amount2.toFixed(2);
-    };
-
-    const formatAmount = (amount) => {
-      const format1 = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      setFormattedAmount(format1);
-      return;
-    };
-
-    formatAmount(amount);
-
-    // คำนวณจำนวนเงินใหม่ถ้ามีการกรอกค่าจำนวนที่หาร
-    let calculatedAmount = amount;
-    if (divided && divided !== "") {
-      calculatedAmount = calculateAmount(divided);
-      setAmount(calculatedAmount); // อัปเดตจำนวนเงินที่คำนวณแล้ว
-      formatAmount(calculatedAmount);
+  const handleNumberChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setNumber(value);
+    } else {
+      setSnackbarOpen(true);
+      setError("Please enter only numeric characters for the ID card number");
     }
+  };
+
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setAmount(value);
+    } else {
+      setSnackbarOpen(true);
+      setError("Please enter only numeric characters for the amount");
+    }
+  };
+
+  const calculateAndFormatAmount = (amt, div) => {
+    let calculatedAmount = amt;
+    if (div && div !== "") {
+      calculatedAmount = (amt / div).toFixed(2);
+    }
+    const formatted = calculatedAmount
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    setFormattedAmount(formatted);
+    return calculatedAmount;
+  };
+
+  const generateQrCode = async () => {
+    // คำนวณจำนวนเงินใหม่ถ้ามีการกรอกค่าจำนวนที่หาร
+    const calculatedAmount = calculateAndFormatAmount(amount, divided);
+    setAmount(calculatedAmount);
 
     // ตรวจสอบว่าเลขหมายหรือหมายเลขบัตรประชาชนถูกต้อง
     if (!number) {
@@ -91,7 +106,7 @@ export default function QrCodeComponent() {
         <TextField
           label="Mobile Number or ID Card Number"
           value={number}
-          onChange={(e) => setNumber(e.target.value)}
+          onChange={handleNumberChange}
           fullWidth
           margin="normal"
           required={true}
@@ -99,9 +114,8 @@ export default function QrCodeComponent() {
 
         <TextField
           label="Amount (optional)"
-          type="number"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={handleAmountChange}
           fullWidth
           margin="normal"
           required={true}
