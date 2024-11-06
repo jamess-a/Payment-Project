@@ -3,6 +3,7 @@ import Card from "@mui/material/Card";
 import { Typography, TextField, Button, Snackbar, Alert } from "@mui/material";
 import generatePayload from "promptpay-qr";
 import qrcode from "qrcode";
+import QRLogo from "../assets/thai_qr_payment.png";
 
 export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
@@ -95,10 +96,15 @@ export default function QrCodeComponent() {
         </Button>
 
         {qrCode && (
-          <div
-            dangerouslySetInnerHTML={{ __html: qrCode }}
-            style={{ marginTop: 20, width: "100%", textAlign: "center" }}
-          />
+          <>
+            <div style={{ marginTop: 20 , border: "5px solid #ccc" }}>
+              <img src={QRLogo} alt="PromptPay Logo" width={270} />
+              <div
+                dangerouslySetInnerHTML={{ __html: qrCode }}
+                style={{ width: "100%", textAlign: "center" }}
+              />
+            </div>
+          </>
         )}
       </Card>
       <Snackbar
