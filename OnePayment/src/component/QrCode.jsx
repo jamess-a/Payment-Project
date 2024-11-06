@@ -64,8 +64,8 @@ export default function QrCodeComponent() {
       setSnackbarOpen(true);
       setError("Please enter a valid divisor");
       setDivied("");
-      setAmount("");
-      setFormattedAmount("");
+      setAmount(amount);
+      setFormattedAmount(formattedAmount);
       return;
     }
 
@@ -85,7 +85,6 @@ export default function QrCodeComponent() {
         setAmount("");
         setFormattedAmount("");
         setQrCode("");
-
       } else {
         const payload = generatePayload(number, {
           amount: parseFloat(calculatedAmount) || 0,
