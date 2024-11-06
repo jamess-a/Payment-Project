@@ -8,27 +8,41 @@ export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
   const [amount, setAmount] = useState("");
   const [qrCode, setQrCode] = useState("");
+  const [error, setError] = useState("");
   const [SnackbarOpen, setSnackbarOpen] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
   const generateQrCode = async () => {
     if (!number) {
       setSnackbarOpen(true);
+      setError("Please enter a mobile number or ID card number");
       return;
     }
 
-    try {
-      const payload = generatePayload(number, {
-        amount: parseFloat(amount) || 0,
-      });
-      const svg = await qrcode.toString(payload, {
-        type: "svg",
-        color: { dark: "#000", light: "#fff" },
-      });
-      setQrCode(svg);
-      setSuccessSnackbarOpen(true);
-    } catch (err) {
-      console.error("Error generating QR code", err);
+    if (amount < 0) {
+      setSnackbarOpen(true);
+      setError("Please enter a valid amount");
+      return;
+    }
+    console.log(number, amount);
+
+    if (number.toString().length === 10 || number.toString().length === 13) {
+      try {
+        const payload = generatePayload(number, {
+          amount: parseFloat(amount) || 0,
+        });
+        const svg = await qrcode.toString(payload, {
+          type: "svg",
+          color: { dark: "#000", light: "#fff" },
+        });
+        setQrCode(svg);
+        setSuccessSnackbarOpen(true);
+      } catch (err) {
+        console.error("Error generating QR code", err);
+      }
+    } else {
+      setSnackbarOpen(true);
+      setError("Wrong mobile number or ID card number format");
     }
   };
 
@@ -94,7 +108,7 @@ export default function QrCodeComponent() {
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Alert severity="error" sx={{ width: "100%" }}>
-          Please fill in all the fields
+          {error}
         </Alert>
       </Snackbar>
 
