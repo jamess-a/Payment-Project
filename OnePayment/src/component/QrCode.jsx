@@ -8,6 +8,7 @@ import QRLogo from "../assets/thai_qr_payment.png";
 export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
   const [amount, setAmount] = useState("");
+  const [formattedAmount, setFormattedAmount] = useState("");
   const [qrCode, setQrCode] = useState("");
   const [divided, setDivied] = useState("");
   const [error, setError] = useState("");
@@ -19,6 +20,15 @@ export default function QrCodeComponent() {
       const amount2 = amount / divided;
       return amount2.toFixed(2);
     };
+
+    const formatAmount = (amount) => {
+      const format1 = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      setFormattedAmount(format1);
+      return;
+    };
+
+    // เรียกใช้ format รูปเเบบจำนวนเงิน
+    formatAmount(amount);
 
     // คำนวณจำนวนเงินใหม่ถ้ามีการกรอกค่าจำนวนที่หาร
     let calculatedAmount = amount;
@@ -119,6 +129,7 @@ export default function QrCodeComponent() {
           <>
             <div style={{ marginTop: 20, border: "5px solid #ccc" }}>
               <img src={QRLogo} alt="PromptPay Logo" width={270} />
+              <Typography>{formattedAmount} THB</Typography>
               <div
                 dangerouslySetInnerHTML={{ __html: qrCode }}
                 style={{ width: "100%", textAlign: "center" }}

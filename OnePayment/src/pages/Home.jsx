@@ -27,7 +27,7 @@ function Home() {
             mb: { xs: 2, sm: 0 }, 
           }}
         >
-          <Typography sx={{ mb: 2 }} variant="h4" gutterBottom>
+          <Typography sx={{ mb: 2 , mt : 2 }} variant="h4" gutterBottom>
             QR Code Payment
           </Typography>
           <Box>
