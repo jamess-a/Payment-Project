@@ -56,6 +56,16 @@ export default function QrCodeComponent() {
     if (!number) {
       setSnackbarOpen(true);
       setError("Please enter a mobile number or ID card number");
+      setNumber("");
+      return;
+    }
+
+    if (divided < 0) {
+      setSnackbarOpen(true);
+      setError("Please enter a valid divisor");
+      setDivied("");
+      setAmount("");
+      setFormattedAmount("");
       return;
     }
 
@@ -63,21 +73,31 @@ export default function QrCodeComponent() {
     if (number.toString().length !== 10 && number.toString().length !== 13) {
       setSnackbarOpen(true);
       setError("Wrong mobile number or ID card number format");
+      setNumber("");
       return;
     }
 
     // สร้าง QR Code
     try {
-      const payload = generatePayload(number, {
-        amount: parseFloat(calculatedAmount) || 0,
-      });
+      if (calculatedAmount < 0) {
+        setSnackbarOpen(true);
+        setError("Please enter a valid amount");
+        setAmount("");
+        setFormattedAmount("");
+        setQrCode("");
 
-      const svg = await qrcode.toString(payload, {
-        type: "svg",
-        color: { dark: "#000", light: "#fff" },
-      });
-      setQrCode(svg);
-      setSuccessSnackbarOpen(true);
+      } else {
+        const payload = generatePayload(number, {
+          amount: parseFloat(calculatedAmount) || 0,
+        });
+
+        const svg = await qrcode.toString(payload, {
+          type: "svg",
+          color: { dark: "#000", light: "#fff" },
+        });
+        setQrCode(svg);
+        setSuccessSnackbarOpen(true);
+      }
     } catch (err) {
       console.error("Error generating QR code", err);
     }
