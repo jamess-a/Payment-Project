@@ -25,16 +25,6 @@ export default function QrCodeComponent() {
     }
   };
 
-  const handleAmountChange = (e) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) {
-      setAmount(value);
-    } else {
-      setSnackbarOpen(true);
-      setError("Please enter only numeric characters for the amount");
-    }
-  };
-
   const calculateAndFormatAmount = (amt, div) => {
     let calculatedAmount = amt;
     if (div && div !== "") {
@@ -135,7 +125,7 @@ export default function QrCodeComponent() {
           label="Amount (optional)"
           type="number"
           value={amount}
-          onChange={handleAmountChange}
+          onChange={(e) => setAmount(e.target.value)}
           fullWidth
           margin="normal"
           required={true}
