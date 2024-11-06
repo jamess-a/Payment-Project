@@ -11,12 +11,17 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useNavigate } from "react-router-dom";
 
 export default function TemporaryDrawer() {
   const [open, setOpen] = React.useState(false);
-
+  const navigate = useNavigate(); 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
   const DrawerList = (
@@ -24,7 +29,7 @@ export default function TemporaryDrawer() {
       <List>
         {["Dashboard"].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => handleNavigation("/dashboard")}>
               <ListItemIcon>
                 <MailIcon />
               </ListItemIcon>
