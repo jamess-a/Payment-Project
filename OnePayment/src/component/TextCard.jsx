@@ -34,7 +34,7 @@ export default function BasicCard() {
           1. กรอกหมายเลขโทรศัพท์หรือหมายเลขบัตรประชาชนที่ผูกกับ promptpay
         </Typography>
         <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
-          2. กรอกจํานวนเงินที่ต้องการชําระ
+          2. กรอกจํานวนเงินที่ต้องการรับชําระ
         </Typography>
         <Typography sx={{ color: "text.secondary" }}>
           3. กดปุ่ม "Generate QR Code"
