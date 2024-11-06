@@ -114,6 +114,7 @@ export default function QrCodeComponent() {
 
         <TextField
           label="Amount (optional)"
+          type="number"
           value={amount}
           onChange={handleAmountChange}
           fullWidth
