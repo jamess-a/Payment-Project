@@ -27,7 +27,7 @@ export default function QrCodeComponent() {
       return;
     };
 
-    // เรียกใช้ format รูปเเบบจำนวนเงิน
+    formatAmount(amount);
 
     // คำนวณจำนวนเงินใหม่ถ้ามีการกรอกค่าจำนวนที่หาร
     let calculatedAmount = amount;
