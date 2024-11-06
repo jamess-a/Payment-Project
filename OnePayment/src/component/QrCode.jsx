@@ -9,41 +9,52 @@ export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
   const [amount, setAmount] = useState("");
   const [qrCode, setQrCode] = useState("");
+  const [divided, setDivied] = useState("");
   const [error, setError] = useState("");
   const [SnackbarOpen, setSnackbarOpen] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
   const generateQrCode = async () => {
+    const calculateAmount = (divided) => {
+      const amount2 = amount / divided;
+      return amount2.toFixed(2);
+    };
+
+    // คำนวณจำนวนเงินใหม่ถ้ามีการกรอกค่าจำนวนที่หาร
+    let calculatedAmount = amount;
+    if (divided && divided !== "") {
+      calculatedAmount = calculateAmount(divided);
+      setAmount(calculatedAmount); // อัปเดตจำนวนเงินที่คำนวณแล้ว
+    }
+
+    // ตรวจสอบว่าเลขหมายหรือหมายเลขบัตรประชาชนถูกต้อง
     if (!number) {
       setSnackbarOpen(true);
       setError("Please enter a mobile number or ID card number");
       return;
     }
 
-    if (amount < 0) {
-      setSnackbarOpen(true);
-      setError("Please enter a valid amount");
-      return;
-    }
-    console.log(number, amount);
-
-    if (number.toString().length === 10 || number.toString().length === 13) {
-      try {
-        const payload = generatePayload(number, {
-          amount: parseFloat(amount) || 0,
-        });
-        const svg = await qrcode.toString(payload, {
-          type: "svg",
-          color: { dark: "#000", light: "#fff" },
-        });
-        setQrCode(svg);
-        setSuccessSnackbarOpen(true);
-      } catch (err) {
-        console.error("Error generating QR code", err);
-      }
-    } else {
+    // ตรวจสอบความยาวของหมายเลขที่กรอก (10 หรือ 13 หลัก)
+    if (number.toString().length !== 10 && number.toString().length !== 13) {
       setSnackbarOpen(true);
       setError("Wrong mobile number or ID card number format");
+      return;
+    }
+
+    // สร้าง QR Code
+    try {
+      const payload = generatePayload(number, {
+        amount: parseFloat(calculatedAmount) || 0,
+      });
+
+      const svg = await qrcode.toString(payload, {
+        type: "svg",
+        color: { dark: "#000", light: "#fff" },
+      });
+      setQrCode(svg);
+      setSuccessSnackbarOpen(true);
+    } catch (err) {
+      console.error("Error generating QR code", err);
     }
   };
 
@@ -86,6 +97,15 @@ export default function QrCodeComponent() {
           required={true}
         />
 
+        <TextField
+          label="People divided (optional)"
+          type="number"
+          value={divided}
+          onChange={(e) => setDivied(e.target.value)}
+          margin="none"
+          required={false}
+        />
+
         <Button
           variant="contained"
           color="primary"
@@ -97,7 +117,7 @@ export default function QrCodeComponent() {
 
         {qrCode && (
           <>
-            <div style={{ marginTop: 20 , border: "5px solid #ccc" }}>
+            <div style={{ marginTop: 20, border: "5px solid #ccc" }}>
               <img src={QRLogo} alt="PromptPay Logo" width={270} />
               <div
                 dangerouslySetInnerHTML={{ __html: qrCode }}
