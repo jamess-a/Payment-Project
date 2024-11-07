@@ -187,29 +187,38 @@ export default function QrCodeComponent() {
                   alignItems: "center",
                 }}
               >
-                <IconButton
-                  sx={{}}
-                  onClick={() => {
-                    const blob = new Blob([qrCode], { type: "image/svg+xml" });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = "qr-code.svg";
-                    link.click();
-                    URL.revokeObjectURL(url);
-                  }}
-                >
-                  <DownloadIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    setSnackbarTextOpen(true);
-                    setText("QR code deleted successfully");
-                    setQrCode("");
-                  }}
-                >
-                  <DeleteForeverIcon />
-                </IconButton>
+                <Box sx={{display: "flex", flexDirection: "row", gap: 1}}>
+                  <IconButton
+                    sx={{}}
+                    onClick={() => {
+                      const blob = new Blob([qrCode], {
+                        type: "image/svg+xml",
+                      });
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement("a");
+                      link.href = url;
+                      link.download = "qr-code.svg";
+                      link.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                  >
+                    <DownloadIcon />
+                    <Typography>Download</Typography>
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setSnackbarTextOpen(true);
+                      setText("QR code deleted successfully");
+                      setQrCode("");
+                      setAmount("");
+                      setDivied("");
+                      setFormattedAmount("");
+                    }}
+                  >
+                    <DeleteForeverIcon />
+                    <Typography>Delete</Typography>
+                  </IconButton>
+                </Box>
               </Box>
             </div>
           </>
