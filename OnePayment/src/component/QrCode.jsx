@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
-import { Typography, TextField, Button, Snackbar, Alert } from "@mui/material";
+import {
+  Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+  IconButton,
+  Box,
+} from "@mui/material";
 import generatePayload from "promptpay-qr";
 import qrcode from "qrcode";
 import QRLogo from "../assets/thai_qr_payment.png";
+import DownloadIcon from "@mui/icons-material/Download";
 
 export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
@@ -153,7 +162,29 @@ export default function QrCodeComponent() {
           <>
             <div style={{ marginTop: 20, border: "5px solid #ccc" }}>
               <img src={QRLogo} alt="PromptPay Logo" width={270} />
-              <Typography>{formattedAmount} THB</Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography>{formattedAmount} THB</Typography>
+                <IconButton
+                  onClick={() => {
+                    const blob = new Blob([qrCode], { type: "image/svg+xml" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = "qr-code.svg";
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </Box>
               <div
                 dangerouslySetInnerHTML={{ __html: qrCode }}
                 style={{ width: "100%", textAlign: "center" }}

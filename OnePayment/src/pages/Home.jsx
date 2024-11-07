@@ -3,6 +3,7 @@ import { Container, Typography, Box } from "@mui/material";
 import QrCodeComponent from "../component/QrCode";
 import AppBar from "../component/AppBar";
 import BasicCard from "../component/TextCard";
+import DashboardLayoutAccount from "./Dashboard";
 
 function Home() {
   return (
@@ -11,7 +12,7 @@ function Home() {
       <Container
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" }, 
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -24,10 +25,10 @@ function Home() {
             justifyContent: "center",
             minHeight: "100vh",
             textAlign: "center",
-            mb: { xs: 2, sm: 0 }, 
+            mb: { xs: 2, sm: 0 },
           }}
         >
-          <Typography sx={{ mb: 2 , mt : 2 }} variant="h4" gutterBottom>
+          <Typography sx={{ mb: 2, mt: 2 }} variant="h4" gutterBottom>
             QR Code Payment
           </Typography>
           <Box>
@@ -36,7 +37,6 @@ function Home() {
         </Box>
         <Box sx={{ ml: { xs: 0, sm: 2 }, mt: { xs: 2, sm: 0 } }}>
           {" "}
-          {/* Adjust margin for mobile */}
           <BasicCard />
         </Box>
       </Container>

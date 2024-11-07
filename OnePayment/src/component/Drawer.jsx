@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function TemporaryDrawer() {
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -27,16 +27,21 @@ export default function TemporaryDrawer() {
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
-        {["Dashboard"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton onClick={() => handleNavigation("/dashboard")}>
-              <ListItemIcon>
-                <MailIcon />
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItemButton onClick={() => handleNavigation("/dashboard")}>
+          <ListItemIcon>
+            <MailIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Dashboard"} />
+        </ListItemButton>
+        <Divider />
+
+        
+        <ListItemButton onClick={() => handleNavigation("/dashboard")}>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Inbox"} />
+        </ListItemButton>
       </List>
       <Divider />
     </Box>

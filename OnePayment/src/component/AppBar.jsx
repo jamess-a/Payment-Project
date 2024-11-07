@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import Drawer from "./Drawer";
 function MyAppBar() {
   return (
-    <AppBar position="static" sx={{ backgroundColor: "primary.main" }}>
+    <AppBar position="static" sx={{ backgroundColor: "primary.main"  }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Drawer />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
