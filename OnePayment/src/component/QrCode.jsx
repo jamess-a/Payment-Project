@@ -13,6 +13,7 @@ import generatePayload from "promptpay-qr";
 import qrcode from "qrcode";
 import QRLogo from "../assets/thai_qr_payment.png";
 import DownloadIcon from "@mui/icons-material/Download";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
@@ -21,7 +22,9 @@ export default function QrCodeComponent() {
   const [qrCode, setQrCode] = useState("");
   const [divided, setDivied] = useState("");
   const [error, setError] = useState("");
+  const [text, setText] = useState("");
   const [SnackbarOpen, setSnackbarOpen] = useState(false);
+  const [SnackbarOpentext, setSnackbarTextOpen] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
 
   const handleNumberChange = (e) => {
@@ -176,19 +179,38 @@ export default function QrCodeComponent() {
                 dangerouslySetInnerHTML={{ __html: qrCode }}
                 style={{ width: "100%", textAlign: "center" }}
               />
-              <IconButton sx={{  }}
-                onClick={() => {
-                  const blob = new Blob([qrCode], { type: "image/svg+xml" });
-                  const url = URL.createObjectURL(blob);
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = "qr-code.svg";
-                  link.click();
-                  URL.revokeObjectURL(url);
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <DownloadIcon />
-              </IconButton>
+                <IconButton
+                  sx={{}}
+                  onClick={() => {
+                    const blob = new Blob([qrCode], { type: "image/svg+xml" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = "qr-code.svg";
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  <DownloadIcon />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    setSnackbarTextOpen(true);
+                    setText("QR code deleted successfully");
+                    setQrCode("");
+                  }}
+                >
+                  <DeleteForeverIcon />
+                </IconButton>
+              </Box>
             </div>
           </>
         )}
@@ -212,6 +234,17 @@ export default function QrCodeComponent() {
       >
         <Alert severity="success" sx={{ width: "100%" }}>
           QR code generated successfully
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={SnackbarOpentext}
+        onClose={() => setSnackbarTextOpen(false)}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          {text}
         </Alert>
       </Snackbar>
     </div>
