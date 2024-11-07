@@ -171,24 +171,24 @@ export default function QrCodeComponent() {
                 }}
               >
                 <Typography>{formattedAmount} THB</Typography>
-                <IconButton
-                  onClick={() => {
-                    const blob = new Blob([qrCode], { type: "image/svg+xml" });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = "qr-code.svg";
-                    link.click();
-                    URL.revokeObjectURL(url);
-                  }}
-                >
-                  <DownloadIcon />
-                </IconButton>
               </Box>
               <div
                 dangerouslySetInnerHTML={{ __html: qrCode }}
                 style={{ width: "100%", textAlign: "center" }}
               />
+              <IconButton sx={{  }}
+                onClick={() => {
+                  const blob = new Blob([qrCode], { type: "image/svg+xml" });
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.download = "qr-code.svg";
+                  link.click();
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                <DownloadIcon />
+              </IconButton>
             </div>
           </>
         )}
