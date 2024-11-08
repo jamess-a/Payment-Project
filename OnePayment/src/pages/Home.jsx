@@ -9,6 +9,7 @@ function Home() {
   return (
     <>
       <AppBar></AppBar>
+      <BasicCard />
       <Container
         sx={{
           display: "flex",
