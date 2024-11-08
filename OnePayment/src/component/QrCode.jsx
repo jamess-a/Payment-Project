@@ -14,6 +14,8 @@ import qrcode from "qrcode";
 import QRLogo from "../assets/thai_qr_payment.png";
 import DownloadIcon from "@mui/icons-material/Download";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import axios from "axios";
+
 
 export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
@@ -79,6 +81,20 @@ export default function QrCodeComponent() {
       return;
     }
 
+    const handletransaction = async () => {
+      try {
+        const response = await axios.post("http://localhost:5000/auth/transaction", {
+          bank_id: number,
+          divided: divided,
+          amount: calculatedAmount,
+          timestamp: new Date().toISOString(),
+        });
+        console.log(response);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     // สร้าง QR Code
     try {
       if (calculatedAmount < 0) {
@@ -98,6 +114,7 @@ export default function QrCodeComponent() {
         });
         setQrCode(svg);
         setSuccessSnackbarOpen(true);
+        handletransaction();
       }
     } catch (err) {
       console.error("Error generating QR code", err);
@@ -187,7 +204,7 @@ export default function QrCodeComponent() {
                   alignItems: "center",
                 }}
               >
-                <Box sx={{display: "flex", flexDirection: "row", gap: 1}}>
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
                   <IconButton
                     sx={{}}
                     onClick={() => {

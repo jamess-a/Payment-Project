@@ -5,7 +5,8 @@
   "main": "db.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "testcase" : "jest"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,6 @@
     "mssql": "^11.0.1",
     "mysql": "^2.18.1",
     "nodemon": "^3.1.7"
+    
   }
 }
