@@ -1,9 +1,10 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100vw; /* เต็มความกว้างของหน้าจอ */
+  height: 100vh; /* เต็มความสูงของหน้าจอ */
+  margin: 0; /* ไม่ให้มี margin */
+  text-align: center; /* จัดข้อความและเนื้อหาทั้งหมดไปทางซ้าย */
 }
+
 
 .logo {
   height: 6em;
