@@ -2,7 +2,7 @@
   "name": "onepayment",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://jamess-a.github.io/Payment-Project",
+  "homepage": "https://jamess-a.github.io/",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
@@ -25,6 +25,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "framer-motion": "^12.4.7",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "nodemon": "^3.1.7",

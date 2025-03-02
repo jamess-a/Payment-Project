@@ -8,17 +8,18 @@ import {
   Alert,
   IconButton,
   Box,
+  Grid,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import generatePayload from "promptpay-qr";
 import qrcode from "qrcode";
 import QRLogo from "../../assets/thai_qr_payment.png";
 import DownloadIcon from "@mui/icons-material/Download";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import axios from "axios";
 import Swal from "sweetalert2";
+import { motion, AnimatePresence } from "framer-motion";
 import { postRequest } from "../../utils/requestUtil";
-
-
 
 export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
@@ -27,10 +28,11 @@ export default function QrCodeComponent() {
   const [qrCode, setQrCode] = useState("");
   const [divided, setDivied] = useState("");
   const [error, setError] = useState("");
-  const [text, setText] = useState("");
   const [SnackbarOpen, setSnackbarOpen] = useState(false);
-  const [SnackbarOpentext, setSnackbarTextOpen] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // ตรวจสอบว่าหน้าจอเป็น Mobile หรือไม่
 
   const handleNumberChange = (e) => {
     const value = e.target.value;
@@ -55,11 +57,10 @@ export default function QrCodeComponent() {
   };
 
   const generateQrCode = async () => {
-    // คำนวณจำนวนเงินใหม่ถ้ามีการกรอกค่าจำนวนที่หาร
     const calculatedAmount = calculateAndFormatAmount(amount, divided);
     setAmount(calculatedAmount);
+   
 
-    // ตรวจสอบว่าเลขหมายหรือหมายเลขบัตรประชาชนถูกต้อง
     if (!number) {
       setSnackbarOpen(true);
       setError("Please enter a mobile number or ID card number");
@@ -76,7 +77,6 @@ export default function QrCodeComponent() {
       return;
     }
 
-    // ตรวจสอบความยาวของหมายเลขที่กรอก (10 หรือ 13 หลัก)
     if (number.toString().length !== 10 && number.toString().length !== 13) {
       setSnackbarOpen(true);
       setError("Wrong mobile number or ID card number format");
@@ -91,7 +91,11 @@ export default function QrCodeComponent() {
           divided: divided ? parseInt(divided) : null,
           amount: calculatedAmount,
           timestamp: new Date().toISOString(),
+          user_id: "12",
+          status: "pending",
         };
+    
+        console.log("Request Data:", requestData);
     
         const response = await postRequest("/transaction/QRPayment", requestData);
         
@@ -121,16 +125,17 @@ export default function QrCodeComponent() {
         setFormattedAmount("");
         setQrCode("");
       } else {
-        const payload = generatePayload(number, {
-          amount: parseFloat(calculatedAmount) || 0,
-        });
+      const payload = generatePayload(number, {
+        amount: parseFloat(calculatedAmount) || 0,
+      });
 
-        const svg = await qrcode.toString(payload, {
-          type: "svg",
-          color: { dark: "#000", light: "#fff" },
-        });
-        setQrCode(svg);
-        setSuccessSnackbarOpen(true);
+      const svg = await qrcode.toString(payload, {
+        type: "svg",
+        color: { dark: "#000", light: "#fff" },
+      });
+
+      setQrCode(svg);
+      setSuccessSnackbarOpen(true);
         handleTransaction();
       }
     } catch (err) {
@@ -139,125 +144,135 @@ export default function QrCodeComponent() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 20,
-      }}
+    <Grid
+      container
+      direction={isMobile ? "column" : "row"}
+      spacing={3}
+      alignItems="center"
+      justifyContent="center"
     >
-      <Card
-        sx={{
-          minWidth: 275,
-          padding: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h6">Generate PromptPay QR Code</Typography>
-
-        <TextField
-          label="Mobile Number or ID Card Number"
-          value={number}
-          onChange={handleNumberChange}
-          fullWidth
-          margin="normal"
-          required={true}
-        />
-
-        <TextField
-          label="Amount (optional)"
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          fullWidth
-          margin="normal"
-          required={true}
-        />
-
-        <TextField
-          label="People divided (optional)"
-          type="number"
-          value={divided}
-          onChange={(e) => setDivied(e.target.value)}
-          margin="none"
-          required={false}
-        />
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={generateQrCode}
-          sx={{ marginTop: 2 }}
+      {/* ฟอร์มป้อนข้อมูล */}
+      <Grid item xs={8} md={6}>
+        <Card
+          sx={{
+            padding: 9,
+            boxShadow: 3,
+          }}
         >
-          Generate QR Code
-        </Button>
+          <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
+            Generate PromptPay QR Code
+          </Typography>
+          <Box sx={{ border: "1px solid #fff", borderRadius: 2, padding: 3 }}>
+            <TextField
+              label="Mobile Number or ID Card Number"
+              value={number}
+              onChange={handleNumberChange}
+              fullWidth
+              margin="normal"
+              required
+            />
 
+            <TextField
+              label="Amount (optional)"
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              fullWidth
+              margin="normal"
+              inputProps={{
+                inputMode: "numeric",
+                pattern: "[0-9]*",
+              }}
+            />
+
+            <TextField
+              label="People divided (optional)"
+              type="number"
+              value={divided}
+              onChange={(e) => setDivied(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={generateQrCode}
+              sx={{ mt: 2, width: "100%" }}
+            >
+              Generate QR Code
+            </Button>
+          </Box>
+        </Card>
+      </Grid>
+
+      {/* ส่วนแสดง QR Code */}
+      <AnimatePresence>
         {qrCode && (
-          <>
-            <div style={{ marginTop: 20, border: "5px solid #ccc" }}>
-              <img src={QRLogo} alt="PromptPay Logo" width={270} />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Typography>{formattedAmount} THB</Typography>
-              </Box>
-              <div
-                dangerouslySetInnerHTML={{ __html: qrCode }}
-                style={{ width: "100%", textAlign: "center" }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
+            <motion.div
+              initial={{ opacity: 0, x: -50 }} // QR Code เริ่มจากซ้ายและจาง
+              animate={{ opacity: 1, x: 0 }} // เลื่อนออกมาแบบ Smooth
+              exit={{ opacity: 0, x: 50 }} // หายไปทางขวาแบบ Smooth
+              transition={{ duration: 0.5 }}
+            >
+              <Card sx={{ padding: 3, textAlign: "center", boxShadow: 3 }}>
+                <img src={QRLogo} alt="PromptPay Logo" width={270} />
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                  {formattedAmount} THB
+                </Typography>
+
+                <div dangerouslySetInnerHTML={{ __html: qrCode }} />
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 2,
+                    mt: 2,
+                  }}
+                >
                   <IconButton
-                    sx={{}}
                     onClick={() => {
-                      const blob = new Blob([qrCode], {
-                        type: "image/svg+xml",
-                      });
+                      const blob = new Blob([qrCode], { type: "image" });
                       const url = URL.createObjectURL(blob);
                       const link = document.createElement("a");
                       link.href = url;
-                      link.download = "qr-code.svg";
+                      link.download = "qr-code.png";
                       link.click();
                       URL.revokeObjectURL(url);
                     }}
+                    sx={{ display: "flex", alignItems: "center" }}
                   >
                     <DownloadIcon />
-                    <Typography>Download</Typography>
+                    <Typography sx={{ ml: 1 }}>Download</Typography>
                   </IconButton>
+
                   <IconButton
                     onClick={() => {
-                      setSnackbarTextOpen(true);
-                      setText("QR code deleted successfully");
                       setQrCode("");
                       setAmount("");
                       setDivied("");
                       setFormattedAmount("");
                     }}
+                    sx={{ display: "flex", alignItems: "center" }}
                   >
                     <DeleteForeverIcon />
-                    <Typography>Delete</Typography>
+                    <Typography sx={{ ml: 1 }}>Delete</Typography>
                   </IconButton>
                 </Box>
-              </Box>
-            </div>
-          </>
+              </Card>
+            </motion.div>
+          </Grid>
         )}
-      </Card>
+      </AnimatePresence>
+
+      {/* Snackbar แจ้งเตือน */}
       <Snackbar
         open={SnackbarOpen}
         onClose={() => setSnackbarOpen(false)}
@@ -279,17 +294,6 @@ export default function QrCodeComponent() {
           QR code generated successfully
         </Alert>
       </Snackbar>
-
-      <Snackbar
-        open={SnackbarOpentext}
-        onClose={() => setSnackbarTextOpen(false)}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          {text}
-        </Alert>
-      </Snackbar>
-    </div>
+    </Grid>
   );
 }

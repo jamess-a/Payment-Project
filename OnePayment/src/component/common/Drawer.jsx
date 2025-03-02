@@ -9,8 +9,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from '@mui/icons-material/Home';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useNavigate } from "react-router-dom";
 
 export default function TemporaryDrawer() {
@@ -27,21 +28,29 @@ export default function TemporaryDrawer() {
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
+        <ListItemButton onClick={() => handleNavigation("/home")}>
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Home"} />
+        </ListItemButton>
+        <Divider />
+
         <ListItemButton onClick={() => handleNavigation("/dashboard")}>
           <ListItemIcon>
-            <MailIcon />
+            <InboxIcon />
           </ListItemIcon>
           <ListItemText primary={"Dashboard"} />
         </ListItemButton>
         <Divider />
 
-        
-        <ListItemButton onClick={() => handleNavigation("/dashboard")}>
+        <ListItemButton onClick={() => handleNavigation("/transactions")}>
           <ListItemIcon>
-            <InboxIcon />
+            <ReceiptIcon />
           </ListItemIcon>
-          <ListItemText primary={"Inbox"} />
+          <ListItemText primary={"Transactions"} />
         </ListItemButton>
+
       </List>
       <Divider />
     </Box>
