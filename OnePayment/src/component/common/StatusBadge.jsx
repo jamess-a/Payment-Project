@@ -73,7 +73,6 @@ const StatusBadge = ({ status_id, currentStatus, fetchTransactions }) => {
           padding: "5px 10px",
           borderRadius: "12px",
           width: "fit-content",
-          display: "inline-block",
           cursor: status === "pending" ? "pointer" : "default",
           marginTop: "2px",
           display: "flex",
