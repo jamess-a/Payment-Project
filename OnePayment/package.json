@@ -2,7 +2,7 @@
   "name": "onepayment",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://jamess-a.github.io/",
+  "homepage": "https://jamess-a.github.io/Payment-Project/home",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
