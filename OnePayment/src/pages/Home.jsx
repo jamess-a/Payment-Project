@@ -1,9 +1,7 @@
 import React from "react";
 import { Container, Typography, Box } from "@mui/material";
-import QrCodeComponent from "../component/QrCode";
-import AppBar from "../component/AppBar";
-import BasicCard from "../component/TextCard";
-import MusicCard from "../component/MusicCard";
+import QrCodeComponent from "../component/common/QrCode";
+import AppBar from "../component/common/AppBar";
 
 function Home() {
   return (
@@ -16,7 +14,6 @@ function Home() {
           justifyContent: "center",
           alignItems: "center",
           padding: 3,
-          
         }}
       >
         <Box
@@ -36,23 +33,6 @@ function Home() {
           <Box>
             <QrCodeComponent />
           </Box>
-        </Box>
-        <Box sx={{ ml: { xs: 0, sm: 2 }, mt: { xs: 2, sm: 0 } }}>
-          {" "}
-          <BasicCard />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "20px",
-            }}
-          >
-            <MusicCard
-              albumCover="https://via.placeholder.com/300"
-              songTitle="Song Title"
-              artistName="Artist Name"
-            />
-          </div>
         </Box>
       </Container>
     </>

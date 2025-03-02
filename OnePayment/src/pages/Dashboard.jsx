@@ -7,23 +7,22 @@ import {
   Box,
   Avatar,
   CircularProgress,
-} from "@mui/material"; // เพิ่ม CircularProgress
-import BackButton from "../component/BackButton";
+} from "@mui/material";
+import BackButton from "../component/common/BackButton";
 
 const Dashboard = () => {
-  const [users, setUsers] = useState([]); // แก้ไขให้เป็น Array ของ users
-  const [loading, setLoading] = useState(true); // สถานะการโหลดข้อมูล
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // ดึงข้อมูลจาก API
   const fetchUsers = async () => {
     try {
-      const response = await fetch("https://randomuser.me/api/?results=10"); // เพิ่ม query parameters เพื่อดึง 10 คน
+      const response = await fetch("https://randomuser.me/api/?results=10");
       const data = await response.json();
-      setUsers(data.results); // กำหนด users ให้เป็น array ของผู้ใช้
-      setLoading(false); // เปลี่ยนสถานะเป็นไม่โหลดเมื่อข้อมูลโหลดเสร็จ
+      setUsers(data.results);
+      setLoading(false);
     } catch (error) {
       console.log("Error fetching users", error);
-      setLoading(false); // กำหนดสถานะเป็นไม่โหลดเมื่อเกิดข้อผิดพลาด
+      setLoading(false);
     }
   };
 
@@ -37,8 +36,6 @@ const Dashboard = () => {
         Users
       </Typography>
       <BackButton />
-
-      {/* แสดง CircularProgress เมื่อกำลังโหลดข้อมูล */}
       {loading ? (
         <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
           <CircularProgress />
@@ -49,17 +46,21 @@ const Dashboard = () => {
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card
                 sx={{
-                  padding: 2,
+                  padding: 3,
                   display: "flex",
                   alignItems: "center",
                   boxShadow: 3,
                 }}
               >
-                <Avatar
-                  src={user.picture.large}
-                  alt={`${user.name.first} ${user.name.last}`}
-                  sx={{ width: 80, height: 80, marginRight: 2 }}
-                />
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Avatar
+                    src={user.picture.large}
+                    alt={`${user.name.first} ${user.name.last}`}
+                    sx={{ width: 80, height: 80, marginRight: 2 }}
+                  />
+                )}
                 <Box>
                   <Typography variant="h6">
                     {`${user.name.first} ${user.name.last}`}

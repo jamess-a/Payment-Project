@@ -11,10 +11,13 @@ import {
 } from "@mui/material";
 import generatePayload from "promptpay-qr";
 import qrcode from "qrcode";
-import QRLogo from "../assets/thai_qr_payment.png";
+import QRLogo from "../../assets/thai_qr_payment.png";
 import DownloadIcon from "@mui/icons-material/Download";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { postRequest } from "../../utils/requestUtil";
+
 
 
 export default function QrCodeComponent() {
@@ -81,20 +84,34 @@ export default function QrCodeComponent() {
       return;
     }
 
-    const handletransaction = async () => {
+    const handleTransaction = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/auth/transaction", {
+        const requestData = {
           bank_id: number,
-          divided: divided,
+          divided: divided ? parseInt(divided) : null,
           amount: calculatedAmount,
           timestamp: new Date().toISOString(),
+        };
+    
+        const response = await postRequest("/transaction/QRPayment", requestData);
+        
+        await Swal.fire({
+          title: "Success",
+          text: "Transaction successfully completed!",
+          icon: "success",
         });
-        console.log(response);
-      } catch (err) {
-        console.error(err);
+    
+        console.log("Transaction Response:", response);
+    
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: error.response?.data?.message || "Transaction failed. Please try again.",
+          icon: "error",
+        });
       }
     };
-
+    
     // สร้าง QR Code
     try {
       if (calculatedAmount < 0) {
@@ -114,7 +131,7 @@ export default function QrCodeComponent() {
         });
         setQrCode(svg);
         setSuccessSnackbarOpen(true);
-        handletransaction();
+        handleTransaction();
       }
     } catch (err) {
       console.error("Error generating QR code", err);
