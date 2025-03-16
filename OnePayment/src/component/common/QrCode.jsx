@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useRef } from "react";
 import Card from "@mui/material/Card";
 import {
   Typography,
@@ -20,6 +20,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Swal from "sweetalert2";
 import { motion, AnimatePresence } from "framer-motion";
 import { postRequest } from "../../utils/requestUtil";
+import html2canvas from "html2canvas";
 
 export default function QrCodeComponent() {
   const [number, setNumber] = useState("");
@@ -30,6 +31,7 @@ export default function QrCodeComponent() {
   const [error, setError] = useState("");
   const [SnackbarOpen, setSnackbarOpen] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
+  const containerRef = useRef(null); // ใช้ ref สำหรับการเข้าถึง div ที่รวมทั้งหมด
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // ตรวจสอบว่าหน้าจอเป็น Mobile หรือไม่
@@ -59,7 +61,6 @@ export default function QrCodeComponent() {
   const generateQrCode = async () => {
     const calculatedAmount = calculateAndFormatAmount(amount, divided);
     setAmount(calculatedAmount);
-   
 
     if (!number) {
       setSnackbarOpen(true);
@@ -92,31 +93,34 @@ export default function QrCodeComponent() {
           amount: calculatedAmount,
           timestamp: new Date().toISOString(),
           user_id: "12",
-          status: "pending",
+          status: "processing",
         };
-    
+
         console.log("Request Data:", requestData);
-    
-        const response = await postRequest("/transaction/QRPayment", requestData);
-        
+
+        const response = await postRequest(
+          "/transaction/QRPayment",
+          requestData
+        );
+
         await Swal.fire({
           title: "Success",
           text: "Transaction successfully completed!",
           icon: "success",
         });
-    
+
         console.log("Transaction Response:", response);
-    
       } catch (error) {
         Swal.fire({
           title: "Error",
-          text: error.response?.data?.message || "Transaction failed. Please try again.",
+          text:
+            error.response?.data?.message ||
+            "Transaction failed. Please try again.",
           icon: "error",
         });
       }
     };
-    
-    // สร้าง QR Code
+
     try {
       if (calculatedAmount < 0) {
         setSnackbarOpen(true);
@@ -125,17 +129,17 @@ export default function QrCodeComponent() {
         setFormattedAmount("");
         setQrCode("");
       } else {
-      const payload = generatePayload(number, {
-        amount: parseFloat(calculatedAmount) || 0,
-      });
+        const payload = generatePayload(number, {
+          amount: parseFloat(calculatedAmount) || 0,
+        });
 
-      const svg = await qrcode.toString(payload, {
-        type: "svg",
-        color: { dark: "#000", light: "#fff" },
-      });
+        const svg = await qrcode.toString(payload, {
+          type: "svg",
+          color: { dark: "#000", light: "#fff" },
+        });
 
-      setQrCode(svg);
-      setSuccessSnackbarOpen(true);
+        setQrCode(svg);
+        setSuccessSnackbarOpen(true);
         handleTransaction();
       }
     } catch (err) {
@@ -222,12 +226,13 @@ export default function QrCodeComponent() {
               transition={{ duration: 0.5 }}
             >
               <Card sx={{ padding: 3, textAlign: "center", boxShadow: 3 }}>
-                <img src={QRLogo} alt="PromptPay Logo" width={270} />
-                <Typography variant="h6" sx={{ mt: 2 }}>
-                  {formattedAmount} THB
-                </Typography>
-
-                <div dangerouslySetInnerHTML={{ __html: qrCode }} />
+                <div ref={containerRef}>
+                  <img src={QRLogo} alt="PromptPay Logo" width={270} />
+                  <Typography variant="h6" sx={{ mt: 2 }}>
+                    {formattedAmount} THB
+                  </Typography>
+                  <div dangerouslySetInnerHTML={{ __html: qrCode }} />
+                </div>
 
                 <Box
                   sx={{
@@ -239,13 +244,18 @@ export default function QrCodeComponent() {
                 >
                   <IconButton
                     onClick={() => {
-                      const blob = new Blob([qrCode], { type: "image" });
-                      const url = URL.createObjectURL(blob);
-                      const link = document.createElement("a");
-                      link.href = url;
-                      link.download = "qr-code.png";
-                      link.click();
-                      URL.revokeObjectURL(url);
+                      if (containerRef.current) {
+                        html2canvas(containerRef.current, {
+                          useCORS: true,
+                        }).then((canvas) => {
+                          // แปลง canvas เป็น image URL
+                          const imageUrl = canvas.toDataURL("image/png");
+                          const link = document.createElement("a");
+                          link.href = imageUrl;
+                          link.download = `qr-code-${formattedAmount}-THB.png`; // ตั้งชื่อไฟล์เป็น qr-code.png
+                          link.click();
+                        });
+                      }
                     }}
                     sx={{ display: "flex", alignItems: "center" }}
                   >

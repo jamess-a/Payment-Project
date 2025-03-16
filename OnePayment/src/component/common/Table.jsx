@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from "react";
+import StatusBadges from "./StatusBadge";
+import QRCodeGenerator from "./QrcodeGen";
+import CloseButton from "./CloseButton";
+import QrCodeIcon from "@mui/icons-material/QrCode";
+import StatusUi from "./StatusIcon";
 import {
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
   Button,
   CircularProgress,
+  Card,
+  Box,
+  Dialog,
+  DialogTitle,
+  Typography,
+  Icon,
 } from "@mui/material";
 import Swal from "sweetalert2";
 import {
@@ -14,39 +27,35 @@ import {
   getRequest,
   deleteRequest,
 } from "../../utils/requestUtil";
-import QRCodeGenerator from "./QrcodeGen";
-import StatusBadge from "./StatusBadge";
 
-const Transactions = () => {
+const TransactionsTable = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [qrLoading, setQrLoading] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [QrModalOpen, SetQrModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   const fetchTransactions = async () => {
     setLoading(true);
     try {
       const response = await getRequest("/transaction/showlogs");
-      console.log("Response:", response);
       setTransactions(response.data);
     } catch (error) {
-      console.error("Error fetching transactions", error);
       Swal.fire("Error!", "Unable to fetch transactions.", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  const editStatus = async (status_id, status) => {
+  const handleStatusChange = async (transactionId, newStatus) => {
     try {
-      const response = await postRequest(`/transaction/${status_id}`, {
-        status,
-      });
-      console.log("Response:", response);
-      if (response.success) {
-        fetchTransactions();
-      }
+      await postRequest(`/transaction/${transactionId}`, { status: newStatus });
+      fetchTransactions();
     } catch (error) {
-      console.error("Error updating status", error);
       Swal.fire("Error!", "Unable to update status.", "error");
     }
   };
@@ -54,7 +63,7 @@ const Transactions = () => {
   const deleteTransaction = async (transactionId) => {
     Swal.fire({
       title: "Are you sure?",
-      text: `You will not be able to recover the transaction with ID ${transactionId}`,
+      text: ` You will not be able to recover the transaction with ID ${transactionId}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -82,135 +91,192 @@ const Transactions = () => {
     });
   };
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
   return (
-    <Box sx={{ padding: 2 }}>
-      <Typography variant="h5" sx={{ mb: 5, textAlign: "center" }}>
-        Transaction List
-      </Typography>
-
-      {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={4}>
-          {transactions && transactions.length > 0 ? (
-            transactions.map((transaction) => (
-              <Grid item xs={12} md={4} key={transaction.transaction_id}>
-                <Card
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "start",
-                  }}
-                >
-                  <CardContent>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        width: "100%",
+    <>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Transaction Ref.</TableCell>
+              <TableCell>Payee</TableCell>
+              <TableCell>Bank</TableCell>
+              <TableCell>Amount</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
+              <TableCell>QR Code</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody
+            sx={{
+              textAlign: "center",
+              width: "50%",
+              maxHeight: "400px", // จำกัดความสูงของ TableBody
+              overflowY: "auto", // ทำให้สามารถ scroll แนวตั้งได้
+            }}
+          >
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  <CircularProgress />
+                </TableCell>
+              </TableRow>
+            ) : transactions.length > 0 ? (
+              transactions.map((transaction) => (
+                <TableRow key={transaction.transaction_id}>
+                  <TableCell>{transaction.transaction_id}</TableCell>
+                  <TableCell>{transaction.user_name}</TableCell>
+                  <TableCell>{transaction.bank_id}</TableCell>
+                  <TableCell>{transaction.amount}</TableCell>
+                  <TableCell>
+                    {new Date(transaction.timestamp).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {
+                      <StatusBadges
+                        status_id={transaction.transaction_id}
+                        currentStatus={transaction.status}
+                        fetchTransactions={fetchTransactions}
+                      />
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() =>
+                          deleteTransaction(transaction.transaction_id)
+                        }
+                        sx={{ borderRadius: "15px" }}
+                      >
+                        Delete
+                      </Button>
+                    }
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        setSelectedTransaction(transaction);
+                        SetQrModalOpen(true);
                       }}
                     >
-                      {/* Left Section: Transaction details */}
-                      <Box sx={{ flex: 1, mr: 2, textAlign: "left" }}>
-                        <Typography variant="h6">
-                          Transaction ID: {transaction.transaction_id}
-                        </Typography>
-                        <Typography variant="body2">
-                          Name: {transaction.user_name}
-                        </Typography>
-                        <Typography variant="body2" sx={{ mt: 1 }}>
-                          Bank ID: {transaction.bank_id}
-                        </Typography>
-                        <Typography variant="body2">
-                          Amount: {transaction.amount}
-                        </Typography>
-                        <Typography variant="body2">
-                          Timestamp:{" "}
-                          {new Date(transaction.timestamp).toLocaleString()}
-                        </Typography>
-                        <Typography variant="body2">
-                          <StatusBadge
-                            status_id={transaction.transaction_id}
-                            currentStatus={transaction.status}
-                            fetchTransactions={fetchTransactions}
-                          />
-                        </Typography>
+                      <QrCodeIcon />
+                    </Button>
 
-                        <Button
-                          variant="contained"
-                          color="error"
-                          sx={{ mt: 2 }}
-                          onClick={() =>
-                            deleteTransaction(transaction.transaction_id)
-                          }
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-
-                      {/* Right Section: QR Code */}
+                    <Dialog
+                      open={QrModalOpen}
+                      onClose={() => SetQrModalOpen(false)}
+                      fullWidth
+                      maxWidth="xs"
+                      sx={{
+                        "& .MuiDialog-paper": {
+                          borderRadius: "12px",
+                          padding: "20px",
+                          boxShadow: "none",
+                        },
+                        "& .MuiBackdrop-root": {
+                          backgroundColor: "rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                    >
                       <Box
                         sx={{
-                          width: "150px",
                           display: "flex",
-                          justifyContent: "center",
-                          ml: 2,
+                          justifyContent: "space-between",
                         }}
                       >
-                        <Card sx={{ width: "100%" }}>
-                          <CardContent>
+                        <StatusUi
+                          status={selectedTransaction?.status || "default"}
+                        />
+                        <CloseButton onClose={() => SetQrModalOpen(false)} />
+                      </Box>
+                      <DialogTitle
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography variant="h6" gutterBottom sx={{ ml: 2 }}>
+                          QR Code{" "}
+                          {selectedTransaction
+                            ? selectedTransaction.transaction_id
+                            : ""}
+                        </Typography>
+                      </DialogTitle>
+
+                      <Box sx={{ fontSize: "10px" }}>
+                        <Typography gutterBottom sx={{ ml: 2 }}>
+                          Amount:{" "}
+                          {selectedTransaction
+                            ? selectedTransaction.amount
+                            : "-"}{" "}
+                          THB
+                        </Typography>
+                        <Typography gutterBottom sx={{ ml: 2 }}>
+                          Bank id:{" "}
+                          {selectedTransaction
+                            ? selectedTransaction.bank_id
+                            : "-"}
+                        </Typography>
+                        <Typography gutterBottom sx={{ ml: 2 }}>
+                          Time:{" "}
+                          {selectedTransaction
+                            ? new Date(
+                                selectedTransaction.timestamp
+                              ).toLocaleDateString()
+                            : "-"}
+                        </Typography>
+                      </Box>
+
+                      <Box
+                        sx={{ p: 3, display: "flex", justifyContent: "center" }}
+                      >
+                        <Box
+                          sx={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div sx={{ textAlign: "center" }}>
                             {qrLoading ? (
                               <CircularProgress
                                 sx={{ display: "block", mx: "auto" }}
                               />
                             ) : (
-                              <QRCodeGenerator
-                                bankId={transaction.bank_id}
-                                amount={transaction.amount}
-                                setQrLoading={setQrLoading}
-                              />
+                              selectedTransaction && (
+                                <QRCodeGenerator
+                                  bankId={selectedTransaction.bank_id}
+                                  amount={selectedTransaction.amount}
+                                  setQrLoading={setQrLoading}
+                                />
+                              )
                             )}
-                          </CardContent>
-                        </Card>
+                          </div>
+                        </Box>
                       </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))
-          ) : (
-            <Box sx={{ display: "flex", justifyContent: "center", ml: 2 }}>
-              <Typography
-                variant="body2"
-                sx={{
-                  textAlign: "center",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  color: "#555",
-                }}
-              >
-                No transactions available.
-              </Typography>
-            </Box>
-          )}
-        </Grid>
-      )}
-    </Box>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  No transactions available.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 
-export default Transactions;
+export default TransactionsTable;
