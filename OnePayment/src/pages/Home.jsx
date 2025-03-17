@@ -1,37 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Typography, Box } from "@mui/material";
 import QrCodeComponent from "../component/common/QrCode";
+import { useUser } from "../context/AuthContext/userContext";
 
 function Home() {
   return (
-      <Box sx={{ padding: 2 }}>
-        <Typography variant="h4" gutterBottom style={{ textAlign: "start" }}>
-          QR Code Payment
-        </Typography>
-        <Container
+    <Box sx={{ padding: 2 }}>
+      <Typography variant="h4" gutterBottom style={{ textAlign: "start" }}>
+        QR Code Payment
+      </Typography>
+      <Container
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: "start",
+          alignItems: "center",
+        }}
+      >
+        <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "start",
+            flexDirection: "column",
             alignItems: "center",
+            justifyContent: "start",
+            minHeight: "50vh",
+            textAlign: "center",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "start",
-              minHeight: "50vh",
-              textAlign: "center",
-            }}
-          >
-            <Box>
-              <QrCodeComponent />
-            </Box>
+          <Box>
+            <QrCodeComponent />
           </Box>
-        </Container>
-      </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 }
 

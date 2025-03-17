@@ -15,7 +15,6 @@ const statusColors = {
 const statuses = ["approved", "declined", "processing"];
 
 const StatusBadge = ({ status_id, currentStatus, fetchTransactions }) => {
-  console.log(status_id);
   const [status, setStatus] = useState(currentStatus || "pending");
   const [anchorEl, setAnchorEl] = useState(null);
   const statusColor =
@@ -49,7 +48,6 @@ const StatusBadge = ({ status_id, currentStatus, fetchTransactions }) => {
               status: newStatus,
             }
           );
-          console.log("Response:", response);
           if (response.success) {
             setStatus(newStatus);
             Swal.fire("Success!", "Status updated successfully.", "success");

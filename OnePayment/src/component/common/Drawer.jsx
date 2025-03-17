@@ -10,8 +10,9 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MenuIcon from "@mui/icons-material/Menu";
-import HomeIcon from '@mui/icons-material/Home';
-import ReceiptIcon from '@mui/icons-material/Receipt';
+import HomeIcon from "@mui/icons-material/Home";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from "react-router-dom";
 
 export default function TemporaryDrawer() {
@@ -35,7 +36,13 @@ export default function TemporaryDrawer() {
           <ListItemText primary={"Home"} />
         </ListItemButton>
         <Divider />
-
+        <ListItemButton onClick={() => handleNavigation("/profile")}>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          <ListItemText primary={"Profile"} />
+        </ListItemButton>
+        <Divider />
         <ListItemButton onClick={() => handleNavigation("/dashboard")}>
           <ListItemIcon>
             <InboxIcon />
@@ -50,7 +57,6 @@ export default function TemporaryDrawer() {
           </ListItemIcon>
           <ListItemText primary={"Transactions"} />
         </ListItemButton>
-
       </List>
       <Divider />
     </Box>

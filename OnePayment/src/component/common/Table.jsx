@@ -51,14 +51,6 @@ const TransactionsTable = () => {
     }
   };
 
-  const handleStatusChange = async (transactionId, newStatus) => {
-    try {
-      await postRequest(`/transaction/${transactionId}`, { status: newStatus });
-      fetchTransactions();
-    } catch (error) {
-      Swal.fire("Error!", "Unable to update status.", "error");
-    }
-  };
 
   const deleteTransaction = async (transactionId) => {
     Swal.fire({
@@ -73,8 +65,6 @@ const TransactionsTable = () => {
       if (result.isConfirmed) {
         try {
           const response = await deleteRequest(`/transaction/${transactionId}`);
-          console.log("Response:", response);
-
           if (response.success) {
             Swal.fire(response.message, "", "success");
             fetchTransactions();
@@ -91,28 +81,33 @@ const TransactionsTable = () => {
     });
   };
 
+  const borderStyle = { borderRight: "1px solid #ccc" };
+
   return (
     <>
-      <TableContainer component={Paper} sx={{ mt: 2 }}>
+      <TableContainer
+        component={Paper}
+        sx={{ mt: 2, width: "80%", mx: "auto" }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Transaction Ref.</TableCell>
-              <TableCell>Payee</TableCell>
-              <TableCell>Bank</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
-              <TableCell>QR Code</TableCell>
+              <TableCell sx={borderStyle}>Transaction Ref.</TableCell>
+              <TableCell sx={borderStyle}>Staff</TableCell>
+              <TableCell sx={borderStyle}>Bank</TableCell>
+              <TableCell sx={borderStyle}>Amount</TableCell>
+              <TableCell sx={borderStyle}>Date</TableCell>
+              <TableCell sx={borderStyle}>Status</TableCell>
+              <TableCell sx={borderStyle}>Actions</TableCell>
+              <TableCell sx={borderStyle}>QR Code</TableCell>
             </TableRow>
           </TableHead>
           <TableBody
             sx={{
               textAlign: "center",
               width: "50%",
-              maxHeight: "400px", // จำกัดความสูงของ TableBody
-              overflowY: "auto", // ทำให้สามารถ scroll แนวตั้งได้
+              maxHeight: "400px",
+              overflowY: "auto",
             }}
           >
             {loading ? (
@@ -124,14 +119,18 @@ const TransactionsTable = () => {
             ) : transactions.length > 0 ? (
               transactions.map((transaction) => (
                 <TableRow key={transaction.transaction_id}>
-                  <TableCell>{transaction.transaction_id}</TableCell>
-                  <TableCell>{transaction.user_name}</TableCell>
-                  <TableCell>{transaction.bank_id}</TableCell>
-                  <TableCell>{transaction.amount}</TableCell>
-                  <TableCell>
+                  <TableCell sx={borderStyle}>
+                    {transaction.transaction_id}
+                  </TableCell>
+                  <TableCell sx={borderStyle}>
+                    {transaction.user_name}
+                  </TableCell>
+                  <TableCell sx={borderStyle}>{transaction.bank_id}</TableCell>
+                  <TableCell sx={borderStyle}>{transaction.amount}</TableCell>
+                  <TableCell sx={borderStyle}>
                     {new Date(transaction.timestamp).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={borderStyle}>
                     {
                       <StatusBadges
                         status_id={transaction.transaction_id}
@@ -140,7 +139,7 @@ const TransactionsTable = () => {
                       />
                     }
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={borderStyle}>
                     {
                       <Button
                         variant="contained"
@@ -154,7 +153,7 @@ const TransactionsTable = () => {
                       </Button>
                     }
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={borderStyle}>
                     <Button
                       variant="contained"
                       color="primary"

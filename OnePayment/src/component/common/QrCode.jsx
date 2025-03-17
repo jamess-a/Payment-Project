@@ -1,4 +1,4 @@
-import React, { useState , useRef } from "react";
+import React, { useState, useRef } from "react";
 import Card from "@mui/material/Card";
 import {
   Typography,
@@ -21,8 +21,11 @@ import Swal from "sweetalert2";
 import { motion, AnimatePresence } from "framer-motion";
 import { postRequest } from "../../utils/requestUtil";
 import html2canvas from "html2canvas";
+import { useUser } from "../../context/AuthContext/userContext";
 
 export default function QrCodeComponent() {
+  const user = useUser();
+
   const [number, setNumber] = useState("");
   const [amount, setAmount] = useState("");
   const [formattedAmount, setFormattedAmount] = useState("");
@@ -86,14 +89,15 @@ export default function QrCodeComponent() {
     }
 
     const handleTransaction = async () => {
+
       try {
         const requestData = {
           bank_id: number,
           divided: divided ? parseInt(divided) : null,
           amount: calculatedAmount,
           timestamp: new Date().toISOString(),
-          user_id: "12",
-          status: "processing",
+          user_uid: user.user.uid,
+          status: "pending",
         };
 
         console.log("Request Data:", requestData);
@@ -220,9 +224,9 @@ export default function QrCodeComponent() {
             sx={{ display: "flex", justifyContent: "center" }}
           >
             <motion.div
-              initial={{ opacity: 0, x: -50 }} // QR Code เริ่มจากซ้ายและจาง
-              animate={{ opacity: 1, x: 0 }} // เลื่อนออกมาแบบ Smooth
-              exit={{ opacity: 0, x: 50 }} // หายไปทางขวาแบบ Smooth
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
               transition={{ duration: 0.5 }}
             >
               <Card sx={{ padding: 3, textAlign: "center", boxShadow: 3 }}>
@@ -248,11 +252,10 @@ export default function QrCodeComponent() {
                         html2canvas(containerRef.current, {
                           useCORS: true,
                         }).then((canvas) => {
-                          // แปลง canvas เป็น image URL
                           const imageUrl = canvas.toDataURL("image/png");
                           const link = document.createElement("a");
                           link.href = imageUrl;
-                          link.download = `qr-code-${formattedAmount}-THB.png`; // ตั้งชื่อไฟล์เป็น qr-code.png
+                          link.download = `qr-code-${formattedAmount}-THB.png`;
                           link.click();
                         });
                       }
@@ -282,7 +285,6 @@ export default function QrCodeComponent() {
         )}
       </AnimatePresence>
 
-      {/* Snackbar แจ้งเตือน */}
       <Snackbar
         open={SnackbarOpen}
         onClose={() => setSnackbarOpen(false)}
@@ -301,7 +303,7 @@ export default function QrCodeComponent() {
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Alert severity="success" sx={{ width: "100%" }}>
-          QR code generated successfully
+          QR code generated successfully by {user.user.displayName}
         </Alert>
       </Snackbar>
     </Grid>

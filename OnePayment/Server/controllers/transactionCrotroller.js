@@ -1,21 +1,14 @@
 const db = require("../../Server/db");
 exports.qrcode = (req, res) => {
-  const {
-    transaction_id,
-    bank_id,
-    divided,
-    amount,
-    timestamp,
-    user_id,
-    status,
-  } = req.body;
+  const { bank_id, divided, amount, timestamp, user_uid, status } = req.body;
   console.log("body", req.body);
 
   const sql =
-    "INSERT INTO logs (transaction_id, bank_id, divided, amount, timestamp, user_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO transactions (transaction_id, bank_id, divided, amount, timestamp, user_uid, status) VALUES (UUID(), ?, ?, ?, ?, ?, ?)";
+
   db.query(
     sql,
-    [transaction_id, bank_id, divided, amount, timestamp, user_id, status],
+    [bank_id, divided, amount, timestamp, user_uid, status],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -24,12 +17,12 @@ exports.qrcode = (req, res) => {
       res.status(201).json({
         success: true,
         data: {
-          transaction_id,
+          transaction_id: result.insertId,
           bank_id,
           divided,
           amount,
           timestamp,
-          user_id,
+          user_uid,
           status,
         },
       });
@@ -39,10 +32,11 @@ exports.qrcode = (req, res) => {
 
 exports.showlogs = (req, res) => {
   const sql = `
-      SELECT logs.*, users.username AS user_name 
-      FROM logs 
-      JOIN users ON logs.user_id = users.id
-    `;
+    SELECT transactions.*, users.username AS user_name 
+    FROM transactions 
+    JOIN users ON transactions.user_uid = users.uid
+    ORDER BY transaction_id DESC
+  `;
 
   db.query(sql, (err, result) => {
     if (err) {
@@ -89,14 +83,14 @@ exports.deleteTransaction = (req, res) => {
 };
 
 exports.editTransaction = (req, res) => {
-  const { status_id } = req.params; 
+  const { status_id } = req.params;
   const { status } = req.body;
   if (!status_id) {
     return res
       .status(400)
       .json({ success: false, message: "Transaction ID is required." });
   }
-  const sql = "UPDATE logs SET status = ? WHERE transaction_id = ?";
+  const sql = "UPDATE transactions SET status = ? WHERE transaction_id = ?";
   db.query(sql, [status, status_id], (err, result) => {
     if (err) {
       console.error("Error updating transaction:", err);
@@ -113,7 +107,7 @@ exports.editTransaction = (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Transaction with ID ${status_id} updated successfully.`, 
+      message: `Transaction with ID ${status_id} updated successfully.`,
     });
   });
 };
