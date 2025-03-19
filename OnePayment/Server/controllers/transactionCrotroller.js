@@ -1,14 +1,24 @@
 const db = require("../../Server/db");
+const generateTransactionId = () => {
+  const prefix = "TH"; // Prefix เช่น TG
+  const randomPart = Math.random().toString(36).substr(2, 5).toUpperCase(); // สุ่ม 5 ตัวอักษร/ตัวเลข
+  const suffix = Math.random().toString(36).substr(2, 5).toUpperCase(); // สุ่มอีก 5 ตัว
+
+  return prefix + randomPart + suffix; // รวมเป็นรหัส เช่น TG2234AW5
+};
+
 exports.qrcode = (req, res) => {
   const { bank_id, divided, amount, timestamp, user_uid, status } = req.body;
   console.log("body", req.body);
 
+  const transaction_ref = generateTransactionId(); 
+
   const sql =
-    "INSERT INTO transactions (transaction_id, bank_id, divided, amount, timestamp, user_uid, status) VALUES (UUID(), ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO transactions (transaction_ref, bank_id, divided, amount, timestamp, user_uid, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
   db.query(
     sql,
-    [bank_id, divided, amount, timestamp, user_uid, status],
+    [transaction_ref, bank_id, divided, amount, timestamp, user_uid, status],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -17,7 +27,7 @@ exports.qrcode = (req, res) => {
       res.status(201).json({
         success: true,
         data: {
-          transaction_id: result.insertId,
+          transaction_ref, 
           bank_id,
           divided,
           amount,
@@ -35,10 +45,11 @@ exports.showlogs = (req, res) => {
     SELECT transactions.*, users.username AS user_name 
     FROM transactions 
     JOIN users ON transactions.user_uid = users.uid
-    ORDER BY transaction_id DESC
+    ORDER BY timestamp DESC
   `;
 
   db.query(sql, (err, result) => {
+    console.log(result);
     if (err) {
       console.error(err);
       return res
@@ -90,7 +101,7 @@ exports.editTransaction = (req, res) => {
       .status(400)
       .json({ success: false, message: "Transaction ID is required." });
   }
-  const sql = "UPDATE transactions SET status = ? WHERE transaction_id = ?";
+  const sql = "UPDATE transactions SET status = ? WHERE id = ?";
   db.query(sql, [status, status_id], (err, result) => {
     if (err) {
       console.error("Error updating transaction:", err);

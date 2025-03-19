@@ -37,7 +37,6 @@ const QRCodeGenerator = ({ bankId, amount }) => {
           amount: parseFloat(calculatedAmount) || 0,
         };
 
-        // สร้าง QR Code
         const svg = await QRCode.toString(JSON.stringify(payload), {
           type: "svg",
           color: { dark: "#000", light: "#fff" },

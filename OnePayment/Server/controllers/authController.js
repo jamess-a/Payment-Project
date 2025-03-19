@@ -65,7 +65,6 @@ exports.show = (req, res) => {
 
 exports.login = (req, res) => {
   const { uid } = req.query;
-  console.log("🔍 Checking uid:", uid);
 
   const sql = "SELECT * FROM users WHERE uid = ?";
   db.query(sql, [uid], (err, result) => {

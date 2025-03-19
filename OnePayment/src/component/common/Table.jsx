@@ -27,6 +27,8 @@ import {
   getRequest,
   deleteRequest,
 } from "../../utils/requestUtil";
+import dateformatter from "../../utils/dateFormatter";
+import amountformatter from "../../utils/amountFormatter";
 
 const TransactionsTable = () => {
   const [transactions, setTransactions] = useState([]);
@@ -51,11 +53,10 @@ const TransactionsTable = () => {
     }
   };
 
-
-  const deleteTransaction = async (transactionId) => {
+  const deleteTransaction = async (transactiondata) => {
     Swal.fire({
       title: "Are you sure?",
-      text: ` You will not be able to recover the transaction with ID ${transactionId}`,
+      text: ` You will not be able to recover the transaction with ID ${transactiondata.transaction_ref}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -64,7 +65,9 @@ const TransactionsTable = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await deleteRequest(`/transaction/${transactionId}`);
+          const response = await deleteRequest(
+            `/transaction/${transactiondata.transaction_id}`
+          );
           if (response.success) {
             Swal.fire(response.message, "", "success");
             fetchTransactions();
@@ -81,25 +84,31 @@ const TransactionsTable = () => {
     });
   };
 
-  const borderStyle = { borderRight: "1px solid #ccc" };
+  const ColumnStyle = { borderRight: "1px solid #ccc" };
 
   return (
     <>
       <TableContainer
         component={Paper}
-        sx={{ mt: 2, width: "80%", mx: "auto" }}
+        sx={{ width: "90%" ,  padding: "8px", mx: "auto" , borderRadius: "0px 0px 12px 12px" }}
       >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={borderStyle}>Transaction Ref.</TableCell>
-              <TableCell sx={borderStyle}>Staff</TableCell>
-              <TableCell sx={borderStyle}>Bank</TableCell>
-              <TableCell sx={borderStyle}>Amount</TableCell>
-              <TableCell sx={borderStyle}>Date</TableCell>
-              <TableCell sx={borderStyle}>Status</TableCell>
-              <TableCell sx={borderStyle}>Actions</TableCell>
-              <TableCell sx={borderStyle}>QR Code</TableCell>
+              <TableCell sx={ColumnStyle}>Transaction Ref.</TableCell>
+              <TableCell sx={ColumnStyle}>Staff</TableCell>
+              <TableCell sx={ColumnStyle}>Bank</TableCell>
+              <TableCell sx={ColumnStyle}>Amount (THB)</TableCell>
+              <TableCell sx={ColumnStyle}>Date</TableCell>
+              <TableCell sx={{ ...ColumnStyle, width: "100px" }}>
+                Status
+              </TableCell>
+              <TableCell sx={{ ...ColumnStyle, width: "100px" }}>
+                Actions
+              </TableCell>
+              <TableCell sx={{ ...ColumnStyle, width: "70px" }}>
+                QR Code
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody
@@ -119,33 +128,38 @@ const TransactionsTable = () => {
             ) : transactions.length > 0 ? (
               transactions.map((transaction) => (
                 <TableRow key={transaction.transaction_id}>
-                  <TableCell sx={borderStyle}>
-                    {transaction.transaction_id}
+                  <TableCell sx={ColumnStyle}>
+                    {transaction.transaction_ref}
                   </TableCell>
-                  <TableCell sx={borderStyle}>
+                  <TableCell sx={ColumnStyle}>
                     {transaction.user_name}
                   </TableCell>
-                  <TableCell sx={borderStyle}>{transaction.bank_id}</TableCell>
-                  <TableCell sx={borderStyle}>{transaction.amount}</TableCell>
-                  <TableCell sx={borderStyle}>
-                    {new Date(transaction.timestamp).toLocaleDateString()}
+                  <TableCell sx={ColumnStyle}>{transaction.bank_id}</TableCell>
+                  <TableCell sx={ColumnStyle}>
+                    {amountformatter(transaction.amount)}
                   </TableCell>
-                  <TableCell sx={borderStyle}>
+                  <TableCell sx={ColumnStyle}>
+                    {dateformatter(transaction.timestamp)}
+                  </TableCell>
+                  <TableCell sx={ColumnStyle}>
                     {
                       <StatusBadges
-                        status_id={transaction.transaction_id}
+                        status_id={transaction.id}
                         currentStatus={transaction.status}
                         fetchTransactions={fetchTransactions}
                       />
                     }
                   </TableCell>
-                  <TableCell sx={borderStyle}>
+                  <TableCell sx={ColumnStyle}>
                     {
                       <Button
                         variant="contained"
                         color="error"
                         onClick={() =>
-                          deleteTransaction(transaction.transaction_id)
+                          deleteTransaction({
+                            transaction_id: transaction.id,
+                            transaction_ref: transaction.transaction_ref,
+                          })
                         }
                         sx={{ borderRadius: "15px" }}
                       >
@@ -153,7 +167,7 @@ const TransactionsTable = () => {
                       </Button>
                     }
                   </TableCell>
-                  <TableCell sx={borderStyle}>
+                  <TableCell sx={ColumnStyle}>
                     <Button
                       variant="contained"
                       color="primary"
@@ -172,7 +186,7 @@ const TransactionsTable = () => {
                       maxWidth="xs"
                       sx={{
                         "& .MuiDialog-paper": {
-                          borderRadius: "12px",
+                          borderRadius: "20px",
                           padding: "20px",
                           boxShadow: "none",
                         },
@@ -201,9 +215,9 @@ const TransactionsTable = () => {
                         }}
                       >
                         <Typography variant="h6" gutterBottom sx={{ ml: 2 }}>
-                          QR Code{" "}
+                          {" "}
                           {selectedTransaction
-                            ? selectedTransaction.transaction_id
+                            ? selectedTransaction.transaction_ref
                             : ""}
                         </Typography>
                       </DialogTitle>
@@ -227,7 +241,16 @@ const TransactionsTable = () => {
                           {selectedTransaction
                             ? new Date(
                                 selectedTransaction.timestamp
-                              ).toLocaleDateString()
+                              ).toLocaleString("th-TH", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: false,
+                                timeZone: "Asia/Bangkok",
+                              })
                             : "-"}
                         </Typography>
                       </Box>

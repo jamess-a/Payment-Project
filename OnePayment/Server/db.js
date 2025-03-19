@@ -4,7 +4,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "pokemon_web",
+  database: "onepay",
 });
 db.connect((err) => {
   if (err) throw err;

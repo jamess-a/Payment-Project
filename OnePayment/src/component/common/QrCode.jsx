@@ -89,7 +89,6 @@ export default function QrCodeComponent() {
     }
 
     const handleTransaction = async () => {
-
       try {
         const requestData = {
           bank_id: number,
@@ -158,16 +157,16 @@ export default function QrCodeComponent() {
       spacing={3}
       alignItems="center"
       justifyContent="center"
+      sx={{ minHeight: "70vh" }}
     >
       {/* ฟอร์มป้อนข้อมูล */}
       <Grid item xs={8} md={6}>
         <Card
           sx={{
-            padding: 9,
             boxShadow: 3,
           }}
         >
-          <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
+          <Typography variant="h6" sx={{ mt: 2, textAlign: "center" }}>
             Generate PromptPay QR Code
           </Typography>
           <Box sx={{ border: "1px solid #fff", borderRadius: 2, padding: 3 }}>
@@ -303,7 +302,7 @@ export default function QrCodeComponent() {
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Alert severity="success" sx={{ width: "100%" }}>
-          QR code generated successfully by {user.user.displayName}
+          QR code generated successfully by {user?.user?.displayName || "User"}
         </Alert>
       </Snackbar>
     </Grid>

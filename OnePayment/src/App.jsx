@@ -11,8 +11,8 @@ import { auth } from "./firebase/firebase"; // Import the firebase auth configur
 import { UserProvider } from "./context/AuthContext/userContext"; // Import UserProvider to wrap the app
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
-import Dashboard from "./pages/dashboard";
-import Transactions from "./pages/transactions";
+import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
 import AppBar from "./component/common/AppBar";
 import GoogleAuth from "./context/AuthContext"; // Import the GoogleAuth component
 
