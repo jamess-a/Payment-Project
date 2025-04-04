@@ -21,6 +21,7 @@ export const UserProvider = ({ children }) => {
           displayName: currentUser.displayName,
           email: currentUser.email,
           photoURL: currentUser.photoURL,
+          role: currentUser.role,
         });
       } else {
         setUser(null);

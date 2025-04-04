@@ -66,7 +66,12 @@ exports.show = (req, res) => {
 exports.login = (req, res) => {
   const { uid } = req.query;
 
-  const sql = "SELECT * FROM users WHERE uid = ?";
+  const sql = `
+    SELECT users.*, role.role_name 
+    FROM users 
+    JOIN role ON users.role_id = role.role_id 
+    WHERE uid = ?`;
+
   db.query(sql, [uid], (err, result) => {
     if (err) {
       console.error("❌ Database Error:", err);
@@ -77,6 +82,7 @@ exports.login = (req, res) => {
       return res.status(404).json({ error: "User not found" });
     } else {
       const user = result[0];
+      console.log(user);
       return res.json({
         success: true,
         message: "Login successful",
@@ -87,6 +93,7 @@ exports.login = (req, res) => {
           age: user.age,
           phone: user.phone,
           height: user.height,
+          role: user.role_name, 
         },
       });
     }

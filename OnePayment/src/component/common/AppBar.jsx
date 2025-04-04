@@ -56,6 +56,9 @@ function MyAppBar() {
               sx={{ mt: 1 }}
             >
               <MenuItem disabled>
+                <Typography sx={{ fontWeight: "bold "}}>{user.role}</Typography>
+              </MenuItem>
+              <MenuItem disabled>
                 <Typography>{user.displayName}</Typography>
               </MenuItem>
               <MenuItem disabled>

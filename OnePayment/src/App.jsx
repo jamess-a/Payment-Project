@@ -7,24 +7,24 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase/firebase"; // Import the firebase auth configuration
-import { UserProvider } from "./context/AuthContext/userContext"; // Import UserProvider to wrap the app
+import { auth } from "./firebase/firebase";
+import { UserProvider } from "./context/AuthContext/userContext";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
+import SlipVerify from "./pages/SlipVerify";
 import AppBar from "./component/common/AppBar";
-import GoogleAuth from "./context/AuthContext"; // Import the GoogleAuth component
+import GoogleAuth from "./context/AuthContext";
 
 import "./App.css";
 
 function App() {
-  const [user, loading, error] = useAuthState(auth); // Track authentication state
+  const [user, loading, error] = useAuthState(auth);
 
-  // If still loading, show a loading message
   if (loading) {
     return <div>Loading...</div>;
-  } else if (error){
+  } else if (error) {
     return <div>Error: {error.message}</div>;
   }
 
@@ -50,6 +50,10 @@ function App() {
               <Route
                 path="/dashboard"
                 element={user ? <Dashboard /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/slipverify"
+                element={user ? <SlipVerify /> : <Navigate to="/login" />}
               />
               <Route
                 path="/transactions"

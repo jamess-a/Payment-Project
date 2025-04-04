@@ -1,0 +1,10 @@
+{
+    "MENU": {
+        "HOME": "Home",
+        "PROFILE": "Profile",
+        "DASHBOARD": "Dashboard",
+        "SLIPVERIFY": "SlipVeriy",
+        "TRANSACTIONS": "Transactions"
+      }
+
+}

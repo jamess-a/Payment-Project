@@ -90,7 +90,12 @@ const TransactionsTable = () => {
     <>
       <TableContainer
         component={Paper}
-        sx={{ width: "90%" ,  padding: "8px", mx: "auto" , borderRadius: "0px 0px 12px 12px" }}
+        sx={{
+          width: "90%",
+          padding: "8px",
+          mx: "auto",
+          borderRadius: "0px 0px 12px 12px",
+        }}
       >
         <Table>
           <TableHead>
@@ -226,7 +231,7 @@ const TransactionsTable = () => {
                         <Typography gutterBottom sx={{ ml: 2 }}>
                           Amount:{" "}
                           {selectedTransaction
-                            ? selectedTransaction.amount
+                            ? amountformatter(selectedTransaction.amount)
                             : "-"}{" "}
                           THB
                         </Typography>

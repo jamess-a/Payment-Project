@@ -27,7 +27,6 @@ const Dashboard = () => {
       </Typography>
       <Box sx={Row}>
         <TotalCard />
-        <TotalCard />
       </Box>
     </Box>
   );

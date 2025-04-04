@@ -9,6 +9,7 @@ const statusColors = {
   approved: "#4CAF50",
   declined: "#F44336",
   processing: "#9C27B0",
+  not_ready: "#9C27B0",
   default: "#808080",
 };
 

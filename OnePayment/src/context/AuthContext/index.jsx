@@ -167,6 +167,7 @@ const GoogleAuth = () => {
           age: existingUser.ages,
           height: existingUser.height,
           phone: existingUser.phone,
+          role: existingUser.role
         });
         console.log(user);
       }
