@@ -37,12 +37,11 @@ export default function TemporaryDrawer() {
     navigate(path);
   };
 
-  const menuItems =
-    user.role === "Product"
-      ? Object.entries(MENU.MENU)
-      : Object.entries(MENU.MENU).filter(([key]) =>
-          ["HOME", "PROFILE"].includes(key)
-        );
+  const menuItems = ["Staff", "Product"].includes(user.role)
+    ? Object.entries(MENU.MENU)
+    : Object.entries(MENU.MENU).filter(([key]) =>
+        ["HOME", "PROFILE", "DASHBOARD"].includes(key)
+      );
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
