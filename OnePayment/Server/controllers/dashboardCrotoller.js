@@ -17,6 +17,7 @@ exports.getSummary = (req, res) => {
     }
 
     const totalAmount = result[0]?.total_amount || 0;
+    console.log(totalAmount)
     res.status(200).json({ success: true, data: { totalAmount } });
   });
 };
