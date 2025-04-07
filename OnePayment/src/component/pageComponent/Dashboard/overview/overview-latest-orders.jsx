@@ -17,42 +17,85 @@ import {
 } from "@mui/material";
 import Scrollbar from "../../../common/Scrollbar";
 import SeverityPill from "../../../common/Severity-pill";
+import StatusBadge from "../../../common/StatusBadge";
+import DateFormatter from "../../../../utils/dateFormatter";
+import { useNavigate } from "react-router-dom";
 
-const statusMap = {
-  pending: "warning",
-  delivered: "success",
-  refunded: "error",
-};
 const OverviewLatestOrders = (props) => {
-  const { orders = [], sx } = props;
+  const { transactions = [], sx, fetchTransactions } = props;
+  const navigate = useNavigate();
+
+  const handleTransactions = () => {
+    navigate("/transactions");
+  };
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Latest Orders" />
-      <Scrollbar sx={{ flexGrow: 1 }}>
+      <CardHeader title="Latest Transactions" />
+      <Scrollbar sx={{ flexGrow: 1, height: 500 }}>
         <Box sx={{ minWidth: 800 }}>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>Order</TableCell>
-                <TableCell>Customer</TableCell>
-                <TableCell sortDirection="desc">Date</TableCell>
-                <TableCell>Status</TableCell>
+              <TableRow sx={{ backgroundColor: "background.paper" }}>
+                <TableCell
+                  sx={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "background.paper",
+                    zIndex: 1,
+                  }}
+                >
+                  Transaction Ref.
+                </TableCell>
+                <TableCell
+                  sx={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "background.paper",
+                    zIndex: 1,
+                  }}
+                >
+                  Payer
+                </TableCell>
+                <TableCell
+                  sx={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "background.paper",
+                    zIndex: 1,
+                  }}
+                  sortDirection="desc"
+                >
+                  Date
+                </TableCell>
+                <TableCell
+                  sx={{
+                    position: "sticky",
+                    top: 0,
+                    backgroundColor: "background.paper",
+                    zIndex: 1,
+                  }}
+                >
+                  Status
+                </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {orders.map((order) => {
-                const createdAt = format(order.createdAt, "dd/MM/yyyy");
 
+            <TableBody>
+              {transactions.map((transactions) => {
                 return (
-                  <TableRow hover key={order.id}>
-                    <TableCell>{order.ref}</TableCell>
-                    <TableCell>{order.customer.name}</TableCell>
-                    <TableCell>{createdAt}</TableCell>
+                  <TableRow hover key={transactions.transaction_id}>
+                    <TableCell>{transactions.transaction_ref}</TableCell>
+                    <TableCell>{transactions.payee}</TableCell>
                     <TableCell>
-                      <SeverityPill color={statusMap[order.status]}>
-                        {order.status}
-                      </SeverityPill>
+                      {DateFormatter(transactions.timestamp_thai)}
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge
+                        status_id={transactions.transaction_id}
+                        currentStatus={transactions.transaction_status}
+                        fetchTransactions={fetchTransactions}
+                      />
                     </TableCell>
                   </TableRow>
                 );
@@ -61,8 +104,19 @@ const OverviewLatestOrders = (props) => {
           </Table>
         </Box>
       </Scrollbar>
+
       <Divider />
       <CardActions sx={{ justifyContent: "flex-end" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            color: "text.secondary",
+            fontSize: 14,
+          }}
+        >
+          Showing {transactions.length} of {transactions.length}
+        </Box>
         <Button
           color="inherit"
           endIcon={
@@ -72,6 +126,7 @@ const OverviewLatestOrders = (props) => {
           }
           size="small"
           variant="text"
+          onClick={handleTransactions}
         >
           View all
         </Button>
@@ -81,7 +136,7 @@ const OverviewLatestOrders = (props) => {
 };
 
 OverviewLatestOrders.prototype = {
-  orders: PropTypes.array,
+  transactions: PropTypes.array,
   sx: PropTypes.object,
 };
 

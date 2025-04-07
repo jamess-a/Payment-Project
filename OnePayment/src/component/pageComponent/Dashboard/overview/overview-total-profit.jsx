@@ -26,8 +26,14 @@ const OverviewTotalProfit = (props) => {
             <Typography color="text.secondary" variant="overline">
               Total Profit
             </Typography>
-            <Typography variant="h4">{amountFormatter(value ?? 0)}</Typography>
+            <Typography variant="h4">
+              {amountFormatter(value ?? 0)} ฿
+            </Typography>
+            <Typography color="text.secondary" variant="caption">
+              Since last 7 days
+            </Typography>
           </Stack>
+
           <Avatar
             sx={{
               backgroundColor: "primary.main",

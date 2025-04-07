@@ -25,9 +25,9 @@ const OverviewTotalCustomers = (props) => {
         >
           <Stack spacing={1}>
             <Typography color="text.secondary" variant="overline">
-              Total Customers
+              Total Transactions
             </Typography>
-            <Typography variant="h4">{value}</Typography>
+            <Typography variant="h4">{value.totalTransactions}</Typography>
           </Stack>
           <Avatar
             sx={{
@@ -67,7 +67,7 @@ const OverviewTotalCustomers = (props) => {
 OverviewTotalCustomers.propTypes = {
   difference: PropTypes.number,
   positive: PropTypes.bool,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.object,
   sx: PropTypes.object,
 };
 

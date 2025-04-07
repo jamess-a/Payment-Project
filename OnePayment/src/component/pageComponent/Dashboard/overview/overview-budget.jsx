@@ -10,9 +10,10 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
+import AmountFormatter from "../../../../utils/amountFormatter";
 const OverviewBudget = (props) => {
   const { difference, positive = false, sx, value } = props;
-
+  console.log(value);
   return (
     <Card sx={sx}>
       <CardContent>
@@ -24,9 +25,9 @@ const OverviewBudget = (props) => {
         >
           <Stack spacing={1}>
             <Typography color="text.secondary" variant="overline">
-              Budget
+              Most Seller !
             </Typography>
-            <Typography variant="h4">{value}</Typography>
+            <Typography variant="h4">{value?.username || "N/A"}</Typography>
           </Stack>
           <Avatar
             sx={{
@@ -50,7 +51,7 @@ const OverviewBudget = (props) => {
                 color={positive ? "success.main" : "error.main"}
                 variant="body2"
               >
-                {difference}%
+                {AmountFormatter(value?.total_amount || 0)} ฿ {difference} %
               </Typography>
             </Stack>
             <Typography color="text.secondary" variant="caption">
@@ -67,7 +68,7 @@ OverviewBudget.prototypes = {
   difference: PropTypes.number,
   positive: PropTypes.bool,
   sx: PropTypes.object,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.object,
 };
 
 export default OverviewBudget;

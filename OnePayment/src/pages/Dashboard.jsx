@@ -15,7 +15,7 @@ import OverviewLatestOrders from ".././component/pageComponent/Dashboard/overvie
 import OverviewLatestProducts from ".././component/pageComponent/Dashboard/overview/overview-latest-products";
 import OverviewSales from ".././component/pageComponent/Dashboard/overview/overview-sales";
 import OverviewTasksProgress from ".././component/pageComponent/Dashboard/overview/overview-tasks-progress";
-import OverviewTotalCustomers from ".././component/pageComponent/Dashboard/overview/overview-total-customers";
+import OverviewTotalTransactions from ".././component/pageComponent/Dashboard/overview/overview-total-transactions";
 import OverviewTotalProfit from ".././component/pageComponent/Dashboard/overview/overview-total-profit";
 import OverviewTraffic from ".././component/pageComponent/Dashboard/overview/overview-traffic";
 import ArrowPathIcon from "@heroicons/react/24/solid/ArrowPathIcon";
@@ -34,28 +34,81 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState({});
+  const [lastTransactions, setLastTransactions] = useState([]);
+  const [bestEmployees, setPopular] = useState({});
+  const [totalTransactions, setTotalTransactions] = useState({});
 
-  const fetchTotalAmount = async () => {
-    console.log("fetchTotalAmount");
+  const paths = [
+    "/dashboard/summary",
+    "/dashboard/lastest-transactions",
+    "/dashboard/most-popular",
+    "/dashboard/total-transactions",
+  ];
+
+  const fetchDashboard = async () => {
+    Swal.fire({
+      title: "Loading...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     try {
-      const response = await getRequest("/dashboard/summary");
-      setSummary(response.data);
-      console.log('fetch',summary)
-      if (loading) {
-        setLoading(false);
-      }
+      const responses = await Promise.all(
+        paths.map((path) => getRequest(path))
+      );
+
+      Swal.close();
+
+      Swal.fire("Success!", "Fetched all successfully.", "success");
+
+      const [summaryRes, TransactionRes, popularRes, TotalTransactionRes] =
+        responses;
+      setSummary(summaryRes.data);
+      setLastTransactions(TransactionRes.data);
+      setPopular(popularRes.data);
+      setTotalTransactions(TotalTransactionRes.data);
     } catch (error) {
+      Swal.close();
+
       Swal.fire("Error!", "Unable to fetch total amount.", "error");
     }
   };
 
-
   const handlefetchDashboard = async () => {
-    await fetchTotalAmount();
+    Swal.fire({
+      title: "Loading...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const responses = await Promise.all(
+        paths.map((path) => getRequest(path))
+      );
+      const [summaryRes, TransactionRes, popularRes, TotalTransactionRes] =
+        responses;
+
+      Swal.close();
+
+      Swal.fire("Success!", "Fetched all successfully.", "success");
+
+      setSummary(summaryRes.data);
+      setLastTransactions([...TransactionRes.data]);
+      setPopular(popularRes.data);
+      setTotalTransactions(TotalTransactionRes.data);
+    } catch (error) {
+      Swal.close();
+
+      Swal.fire("Error!", "Unable to fetch total amount.", "error");
+    }
   };
 
   useEffect(() => {
-    fetchTotalAmount();
+    fetchDashboard();
   }, []);
 
   return (
@@ -98,25 +151,28 @@ const Dashboard = () => {
           <Grid container spacing={3}>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewBudget
-                difference={12}
-                positive
+                difference={65}
+                positive={true}
                 sx={{ height: "100%" }}
-                value="$24k"
+                value={bestEmployees}
               />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
-              <OverviewTotalCustomers
+              <OverviewTotalTransactions
                 difference={16}
                 positive={false}
                 sx={{ height: "100%" }}
-                value="1.6k"
+                value={totalTransactions}
               />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewTasksProgress sx={{ height: "100%" }} value={75.5} />
             </Grid>
             <Grid xs={12} sm={6} lg={3}>
-              <OverviewTotalProfit sx={{ height: "100%" }} value={summary.totalAmount} />
+              <OverviewTotalProfit
+                sx={{ height: "100%" }}
+                value={summary.totalAmount}
+              />
             </Grid>
             <Grid xs={12} lg={8}>
               <OverviewSales
@@ -179,69 +235,9 @@ const Dashboard = () => {
             </Grid>
             <Grid xs={12} md={12} lg={8}>
               <OverviewLatestOrders
-                orders={[
-                  {
-                    id: "f69f88012978187a6c12897f",
-                    ref: "DEV1049",
-                    amount: 30.5,
-                    customer: {
-                      name: "Ekaterina Tankova",
-                    },
-                    createdAt: 1555016400000,
-                    status: "pending",
-                  },
-                  {
-                    id: "9eaa1c7dd4433f413c308ce2",
-                    ref: "DEV1048",
-                    amount: 25.1,
-                    customer: {
-                      name: "Cao Yu",
-                    },
-                    createdAt: 1555016400000,
-                    status: "delivered",
-                  },
-                  {
-                    id: "01a5230c811bd04996ce7c13",
-                    ref: "DEV1047",
-                    amount: 10.99,
-                    customer: {
-                      name: "Alexa Richardson",
-                    },
-                    createdAt: 1554930000000,
-                    status: "refunded",
-                  },
-                  {
-                    id: "1f4e1bd0a87cea23cdb83d18",
-                    ref: "DEV1046",
-                    amount: 96.43,
-                    customer: {
-                      name: "Anje Keizer",
-                    },
-                    createdAt: 1554757200000,
-                    status: "pending",
-                  },
-                  {
-                    id: "9f974f239d29ede969367103",
-                    ref: "DEV1045",
-                    amount: 32.54,
-                    customer: {
-                      name: "Clarke Gillebert",
-                    },
-                    createdAt: 1554670800000,
-                    status: "delivered",
-                  },
-                  {
-                    id: "ffc83c1560ec2f66a1c05596",
-                    ref: "DEV1044",
-                    amount: 16.76,
-                    customer: {
-                      name: "Adam Denisov",
-                    },
-                    createdAt: 1554670800000,
-                    status: "delivered",
-                  },
-                ]}
+                transactions={lastTransactions}
                 sx={{ height: "100%" }}
+                fetchTransactions={handlefetchDashboard}
               />
             </Grid>
           </Grid>

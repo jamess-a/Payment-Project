@@ -16,13 +16,12 @@ const statusColors = {
 const statuses = ["approved", "declined", "processing"];
 
 const StatusBadge = ({ status_id, currentStatus, fetchTransactions }) => {
-  const [status, setStatus] = useState(currentStatus || "pending");
   const [anchorEl, setAnchorEl] = useState(null);
   const statusColor =
-    statusColors[status?.toLowerCase()] || statusColors.default;
+    statusColors[currentStatus?.toLowerCase()] || statusColors.default;
 
   const handleClick = (event) => {
-    if (status === "pending") {
+    if (currentStatus === "pending") {
       setAnchorEl(event.currentTarget);
     }
   };
@@ -45,14 +44,11 @@ const StatusBadge = ({ status_id, currentStatus, fetchTransactions }) => {
         try {
           const response = await patchRequest(
             `/transaction/changeStatus/${status_id}`,
-            {
-              status: newStatus,
-            }
+            { status: newStatus }
           );
           if (response.success) {
-            setStatus(newStatus);
             Swal.fire("Success!", "Status updated successfully.", "success");
-            fetchTransactions();
+            fetchTransactions(); // Dashboard จะ fetch ใหม่ให้เอง
           }
         } catch (error) {
           console.error("Error updating status", error);
@@ -72,10 +68,10 @@ const StatusBadge = ({ status_id, currentStatus, fetchTransactions }) => {
           padding: "5px 10px",
           borderRadius: "12px",
           width: "fit-content",
-          cursor: status === "pending" ? "pointer" : "default",
+          cursor: currentStatus === "pending" ? "pointer" : "default",
           marginTop: "2px",
           display: "flex",
-          alignItems: "center", 
+          alignItems: "center",
         }}
         onClick={handleClick}
       >
@@ -87,9 +83,9 @@ const StatusBadge = ({ status_id, currentStatus, fetchTransactions }) => {
             textTransform: "capitalize",
           }}
         >
-          {status}
+          {currentStatus}
         </Typography>
-        {status === "pending" && (
+        {currentStatus === "pending" && (
           <ArrowDropDownIcon
             sx={{ color: "#fff", fontSize: "18px", marginLeft: "5px" }}
           />

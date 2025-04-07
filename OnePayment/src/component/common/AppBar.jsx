@@ -31,7 +31,7 @@ function MyAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "primary.main" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* Drawer เมนูด้านข้าง */}
         {user && <Drawer />}
