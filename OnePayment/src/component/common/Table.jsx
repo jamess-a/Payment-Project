@@ -245,7 +245,11 @@ const TransactionsTable = () => {
                           Time:{" "}
                           {selectedTransaction
                             ? new Date(
-                                selectedTransaction.timestamp
+                                new Date(
+                                  selectedTransaction.timestamp
+                                ).toLocaleString("en-US", {
+                                  timeZone: "Asia/Bangkok",
+                                })
                               ).toLocaleString("th-TH", {
                                 year: "numeric",
                                 month: "2-digit",
@@ -254,7 +258,6 @@ const TransactionsTable = () => {
                                 minute: "2-digit",
                                 second: "2-digit",
                                 hour12: false,
-                                timeZone: "Asia/Bangkok",
                               })
                             : "-"}
                         </Typography>

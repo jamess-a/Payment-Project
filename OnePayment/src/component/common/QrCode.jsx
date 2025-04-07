@@ -90,11 +90,13 @@ export default function QrCodeComponent() {
 
     const handleTransaction = async () => {
       try {
+        const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
         const requestData = {
           bank_id: number,
           divided: divided ? parseInt(divided) : null,
           amount: calculatedAmount,
-          timestamp: new Date().toISOString(),
+          timestamp: timestamp,
           user_uid: user.user.uid,
           status: "pending",
         };

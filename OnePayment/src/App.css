@@ -1,8 +1,8 @@
 #root {
-  width: 100vw; /* เต็มความกว้างของหน้าจอ */
-  height: 100vh; /* เต็มความสูงของหน้าจอ */
-  margin: 0; /* ไม่ให้มี margin */
-  text-align: center; /* จัดข้อความและเนื้อหาทั้งหมดไปทางซ้าย */
+  width: 100vw; 
+  height: 100vh; 
+  margin: 0; 
+  text-align: center; 
 }
 
 

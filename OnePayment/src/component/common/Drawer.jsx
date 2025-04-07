@@ -38,7 +38,7 @@ export default function TemporaryDrawer() {
   };
 
   const menuItems =
-    user.role === "Staff"
+    user.role === "Product"
       ? Object.entries(MENU.MENU)
       : Object.entries(MENU.MENU).filter(([key]) =>
           ["HOME", "PROFILE"].includes(key)
