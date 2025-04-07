@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import ArrowDownIcon from "@heroicons/react/24/solid/ArrowDownIcon";
 import ArrowUpIcon from "@heroicons/react/24/solid/ArrowUpIcon";
-import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
+import UserIcon from "@heroicons/react/24/solid/UserCircleIcon";
 import {
   Avatar,
   Card,
@@ -25,7 +25,7 @@ const OverviewBudget = (props) => {
         >
           <Stack spacing={1}>
             <Typography color="text.secondary" variant="overline">
-              Most Seller !
+              Best Employee !
             </Typography>
             <Typography variant="h4">{value?.username || "N/A"}</Typography>
           </Stack>
@@ -37,7 +37,7 @@ const OverviewBudget = (props) => {
             }}
           >
             <SvgIcon>
-              <CurrencyDollarIcon />
+              <UserIcon />
             </SvgIcon>
           </Avatar>
         </Stack>

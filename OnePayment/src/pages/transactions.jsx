@@ -21,7 +21,6 @@ const Transactions = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (user.user.role) {
-      console.log(user.user.role);
       const hasPermission = checkPermissions(
         ["Staff", "Product"],
         user.user.role
