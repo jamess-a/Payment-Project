@@ -144,11 +144,10 @@ const Dashboard = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          py: 8,
         }}
       >
         <Container maxWidth="xl">
-          <Grid container spacing={3}>
+          <Grid container spacing={1}>
             <Grid xs={12} sm={6} lg={3}>
               <OverviewBudget
                 difference={65}
