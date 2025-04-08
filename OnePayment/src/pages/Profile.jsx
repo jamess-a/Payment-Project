@@ -1,15 +1,31 @@
 import React from "react";
 import { useUser } from "../context/AuthContext/userContext";
 import { auth } from "../firebase/firebase";
-import { Container, Paper, Avatar, Typography, Button , Box } from "@mui/material";
+import {
+  Container,
+  Paper,
+  Avatar,
+  Typography,
+  Button,
+  Box,
+  Stack,
+  Grid,
+} from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
+import AccountProfile from ".././component/pageComponent/Profile/account/account-profile";
+import AccountProfileDetails from ".././component/pageComponent/Profile/account/account-profile-details";
+import Swal from "sweetalert2";
 
 const Profile = () => {
   const { user } = useUser();
-  console.log(user);
 
   const handleSignOut = () => {
-    auth.signOut();
+    try {
+      Swal.fire("Success", "Sign out successfully", "success");
+      auth.signOut();
+    } catch (error) {
+      Swal.fire("Error", "Sign out failed", "error");
+    }
   };
 
   return (
@@ -17,59 +33,39 @@ const Profile = () => {
       <Typography variant="h4" gutterBottom style={{ textAlign: "start" }}>
         Profile
       </Typography>
-      <Container
-        maxWidth="sm"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "80vh",
-        }}
-      >
+      <Container maxWidth="lg">
         {user ? (
-          <Paper
-            elevation={6}
+          <Box
+            component="main"
             sx={{
-              padding: 4,
-              textAlign: "center",
-              borderRadius: 3,
+              flexGrow: 1,
+              py: 8,
             }}
           >
-            <Avatar
-              src={user.photoURL}
-              alt="Profile"
-              sx={{
-                width: 80,
-                height: 80,
-                margin: "auto",
-                border: "3px solid #1976D2",
-              }}
-            />
-            <Typography variant="body1" color={"text.secondary"} sx={{ mt: 2 }}>
-              {user.uid}
-            </Typography>
-            <Typography variant="h5" fontWeight="bold" sx={{ mt: 2 }}>
-              {user.displayName}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {user.email}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Height {user.height}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {user.age}
-            </Typography>
-            <Button
-              variant="contained"
-              color="error"
-              startIcon={<LogoutIcon />}
-              onClick={handleSignOut}
-              sx={{ mt: 3 }}
-            >
-              Sign Out
-            </Button>
-          </Paper>
+            <Container maxWidth="lg">
+              <Box>
+                <Grid container spacing={3}>
+                  <Grid xs={12} md={6} lg={4}>
+                    <AccountProfile user={user} />
+                    <Button
+                      variant="contained"
+                      color="error"
+                      startIcon={<LogoutIcon />}
+                      onClick={handleSignOut}
+                      sx={{ my: 3 }}
+                    >
+                      Sign Out
+                    </Button>
+                  </Grid>
+                  <Grid xs={12} md={6} lg={8}>
+                    <Box sx={{ px: 2 }}>
+                      <AccountProfileDetails user={user} />
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Container>
+          </Box>
         ) : (
           <Typography variant="h6" color="text.secondary">
             You need to log in to view your profile.

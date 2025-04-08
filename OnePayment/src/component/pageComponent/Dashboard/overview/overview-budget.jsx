@@ -13,7 +13,6 @@ import {
 import AmountFormatter from "../../../../utils/amountFormatter";
 const OverviewBudget = (props) => {
   const { difference, positive = false, sx, value } = props;
-  console.log(value);
   return (
     <Card sx={sx}>
       <CardContent>
