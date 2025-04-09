@@ -45,7 +45,7 @@ function MyAppBar() {
         {user && (
           <>
             <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
-              <Avatar src={user.photoURL} alt={user.displayName} />
+              <Avatar src={user.photoURL}/>
             </IconButton>
 
             {/* Dropdown Menu */}

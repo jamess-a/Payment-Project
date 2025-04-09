@@ -4,7 +4,8 @@
         "PROFILE": "Profile",
         "DASHBOARD": "Dashboard",
         "SLIPVERIFY": "SlipVerify",
-        "TRANSACTIONS": "Transactions"
+        "TRANSACTIONS": "Transactions",
+        "EMPLOYEES": "Employees"
       }
 
 }

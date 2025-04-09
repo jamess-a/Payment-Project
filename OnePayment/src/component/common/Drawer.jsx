@@ -12,9 +12,10 @@ import HomeIcon from "@mui/icons-material/Home";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PersonIcon from "@mui/icons-material/Person";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import BadgeIcon from "@mui/icons-material/Badge";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/AuthContext/userContext";
-import MENU from "../../constant/menu.json";
+import PORTAL from "../../constant/menu.json";
 
 const menuIcons = {
   HOME: <HomeIcon />,
@@ -22,6 +23,7 @@ const menuIcons = {
   DASHBOARD: <InboxIcon />,
   SLIPVERIFY: <ReceiptLongIcon />,
   TRANSACTIONS: <ReceiptIcon />,
+  EMPLOYEES: <BadgeIcon />
 };
 
 export default function TemporaryDrawer() {
@@ -37,11 +39,19 @@ export default function TemporaryDrawer() {
     navigate(path);
   };
 
-  const menuItems = ["Staff", "Product"].includes(user.role)
-    ? Object.entries(MENU.MENU)
-    : Object.entries(MENU.MENU).filter(([key]) =>
-        ["HOME", "PROFILE", "DASHBOARD"].includes(key)
-      );
+  let menuItems;
+
+  if (["Staff", "Product"].includes(user.role)) {
+    menuItems = Object.entries(PORTAL.MENU);
+  } else if (["Hr"].includes(user.role)) {
+    menuItems = Object.entries(PORTAL.MENU).filter(([key]) =>
+      ["EMPLOYEES", "PROFILE"].includes(key)
+    );
+  } else {
+    menuItems = Object.entries(PORTAL.MENU).filter(([key]) =>
+      ["HOME", "PROFILE", "DASHBOARD"].includes(key)
+    );
+  }
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>

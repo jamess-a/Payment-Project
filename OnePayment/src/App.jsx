@@ -14,6 +14,9 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import SlipVerify from "./pages/SlipVerify";
+import Employees from "./pages/Employees";
+
+
 import AppBar from "./component/common/AppBar";
 import GoogleAuth from "./context/AuthContext";
 
@@ -58,6 +61,10 @@ function App() {
               <Route
                 path="/transactions"
                 element={user ? <Transactions /> : <Navigate to="/login" />}
+              />
+               <Route
+                path="/employees"
+                element={user ? <Employees /> : <Navigate to="/login" />}
               />
               <Route path="/" element={<Navigate to="/home" />} />
             </Routes>

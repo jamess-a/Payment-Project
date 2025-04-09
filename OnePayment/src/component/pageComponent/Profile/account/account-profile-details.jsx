@@ -19,8 +19,8 @@ const states = [
 ];
 const AccountProfileDetails = (user) => {
   const [values, setValues] = useState({
-    firstName: user.user.displayName,
-    lastName: user.user.uid,
+    username: user.user.displayName,
+    uid: user.user.uid,
     email: user.user.email,
     phone: user.user.phone,
     state: "TH-Bankok",
@@ -49,11 +49,11 @@ const AccountProfileDetails = (user) => {
                 <TextField
                   fullWidth
                   helperText="Please specify the first name"
-                  label="First name"
-                  name="firstName"
+                  label="Username"
+                  name="Username"
                   onChange={handleChange}
                   required
-                  value={values.firstName}
+                  value={values.username}
                 />
               </Grid>
               <Grid xs={12} md={6}>
@@ -63,7 +63,7 @@ const AccountProfileDetails = (user) => {
                   name="uid"
                   onChange={handleChange}
                   required
-                  value={values.lastName}
+                  value={values.uid}
                 />
               </Grid>
               <Grid xs={12} md={6}>
